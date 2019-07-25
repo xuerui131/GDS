@@ -17,9 +17,24 @@ class DocUpload extends React.Component {
       ],
     };
 
-    // componentDidMount()
-    // {
-    // }
+    componentDidMount()
+    {
+        if(this.props.file)
+        {
+            let files = [];
+            
+            files.push({
+                uid:1,
+                name: this.props.file.name,
+                status:'done',
+                url: this.props.file.url
+            });
+
+            this.setState({
+                fileList:files
+            })
+        }
+    }
 
     // componentWillUpdate(){
 
@@ -259,15 +274,15 @@ export class ViewProjectAMDPhase1 extends React.Component {
                     </Form.Item>
                     <Form.Item label="项目进度计划">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.content.PlanFile} afterUpload={this.afterUploadPlanFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.content.PlanFile.url} target="_blank" style={{display:'block'}}>{this.state.content.PlanFile.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 ? <a href={this.state.content.PlanFile.url} target="_blank" style={{display:'block'}}>{this.state.content.PlanFile.name}</a> : null}
                     </Form.Item>
                     <Form.Item label="项目实施方案">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.content.ImplementFile} afterUpload={this.afterUploadImplementFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.content.ImplementFile.url} target="_blank" style={{display:'block'}}>{this.state.content.ImplementFile.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 ? <a href={this.state.content.ImplementFile.url} target="_blank" style={{display:'block'}}>{this.state.content.ImplementFile.name}</a> : null}
                     </Form.Item>
                     <Form.Item label="场地规划图">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.content.SiteFile} afterUpload={this.afterUploadSiteFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.content.SiteFile.url} target="_blank" style={{display:'block'}}>{this.state.content.SiteFile.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 ? <a href={this.state.content.SiteFile.url} target="_blank" style={{display:'block'}}>{this.state.content.SiteFile.name}</a> : null}
                     </Form.Item>
                 </Form>
                
@@ -448,7 +463,7 @@ export class ViewProjectAMDPhase2 extends React.Component {
                     </Form.Item>
                     <Form.Item label="采购文件">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.file} afterUpload={this.afterUploadFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
                     </Form.Item>
             </Form>          
         );
@@ -596,7 +611,7 @@ export class ViewProjectAMDPhase3 extends React.Component {
                     </Form.Item>
                     <Form.Item label="附件">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.file} afterUpload={this.afterUploadFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
                     </Form.Item>
             </Form>          
         );
@@ -729,7 +744,7 @@ export class ViewProjectAMDPhase4 extends React.Component {
                     </Form.Item>
                     <Form.Item label="附件">
                       { this.props.data[FieldStatus] === 1 ? <DocUpload file={this.state.file} afterUpload={this.afterUploadFileHandler.bind(this)}></DocUpload> : null}
-                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={Constants.APIBaseUrl + 'upload/' + this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
+                      { this.props.data[FieldStatus] === 2 && this.state.file ? <a href={this.state.file.url} target="_blank" style={{display:'block'}}>{this.state.file.name}</a> : null}
                     </Form.Item>
             </Form>          
         );
