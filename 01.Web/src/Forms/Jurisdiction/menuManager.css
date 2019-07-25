@@ -1,0 +1,36 @@
+
+.menuManage,.box {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  margin: 0 5px;
+}
+
+.treeBox {
+  height: 100%;
+  width: 200px;
+  border: 1px solid #ccc;
+}
+
+.treeBox p.title {
+  background-color: #f5f7fa;
+  line-height: 30px;
+  text-align: center;
+}
+
+.main {
+  flex: 1;
+  position: relative;
+  margin-left: 5px;
+  /* border-left: 1px solid #ccc; */
+}
+
+/* 覆盖tabs样式 */
+.menuManage .ant-tabs-bar {
+  margin-bottom: 0;
+}
+
+/* 覆盖父容器样式 */
+.ant-layout-content {
+  padding: 0;
+}
