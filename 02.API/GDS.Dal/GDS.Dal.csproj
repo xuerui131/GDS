@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1ED5BC4F-E08E-46EE-948A-942BD21FBCA1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GDS.Dal</RootNamespace>
+    <AssemblyName>GDS.Dal</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SqlSugar">
+      <HintPath>..\GDS.BinLib\SqlSugar.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\BaseDal.cs" />
+    <Compile Include="Common\IDaoBase.cs" />
+    <Compile Include="Common\ImplDaoBase.cs" />
+    <Compile Include="Common\SugarDao.cs" />
+    <Compile Include="DaoImpl\ImplBackUserInfo.cs" />
+    <Compile Include="DaoImpl\ImplBaseData.cs" />
+    <Compile Include="DaoImpl\ImplDepartment.cs" />
+    <Compile Include="DaoImpl\ImplFormLibrary.cs" />
+    <Compile Include="DaoImpl\ImplLog.cs" />
+    <Compile Include="DaoImpl\ImplOutMemberInfo.cs" />
+    <Compile Include="DaoImpl\ImplPosition.cs" />
+    <Compile Include="DaoImpl\ImplProject.cs" />
+    <Compile Include="DaoImpl\ImplProjectAttachment.cs" />
+    <Compile Include="DaoImpl\ImplProjectPhase.cs" />
+    <Compile Include="DaoImpl\ImplProjectType.cs" />
+    <Compile Include="DaoImpl\ImplSupplierInfo.cs" />
+    <Compile Include="DaoImpl\ImplTemplate.cs" />
+    <Compile Include="DaoImpl\ImplTemplateMustContent.cs" />
+    <Compile Include="DaoImpl\ImplTemplatePhase.cs" />
+    <Compile Include="DaoImpl\ImplUserDetail.cs" />
+    <Compile Include="DaoImpl\ImplUsers.cs" />
+    <Compile Include="IDao\IBackUerInfoDao.cs" />
+    <Compile Include="IDao\IBaseDataDao.cs" />
+    <Compile Include="IDao\IDepartmentDao.cs" />
+    <Compile Include="IDao\IFormLibraryDao.cs" />
+    <Compile Include="IDao\ILogDao.cs" />
+    <Compile Include="IDao\IOutMemberInfoDao.cs" />
+    <Compile Include="IDao\IPositionDao.cs" />
+    <Compile Include="IDao\IProjectAttachmentDao.cs" />
+    <Compile Include="IDao\IProjectDao.cs" />
+    <Compile Include="IDao\IProjectPhaseDao.cs" />
+    <Compile Include="IDao\IProjectTypeDao.cs" />
+    <Compile Include="IDao\ISupplierInfoDao.cs" />
+    <Compile Include="IDao\ITemplateDao.cs" />
+    <Compile Include="IDao\ITemplateMustContentDao.cs" />
+    <Compile Include="IDao\ITemplatePhaseDao.cs" />
+    <Compile Include="IDao\IUserDetailDao.cs" />
+    <Compile Include="IDao\IUsersDao.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GDS.Comon\GDS.Comon.csproj">
+      <Project>{9f1dfe93-5636-42f1-99dd-3fe6b17d4880}</Project>
+      <Name>GDS.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GDS.Entity\GDS.Entity.csproj">
+      <Project>{4e914cd3-1370-4560-a07a-2208d45f02d7}</Project>
+      <Name>GDS.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
