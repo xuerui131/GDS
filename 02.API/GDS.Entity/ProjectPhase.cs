@@ -35,5 +35,10 @@ namespace GDS.Entity
         public string LinkedFormContentJson { get; set; }
 
         public string AMDContentJson { get; set; }
+
+        /// <summary>
+        /// 每个阶段下的任务列表，由PM添加，给指定的User。 每个User可以更改自己任务的状态。
+        /// </summary>
+        public string TaskJson { get; set; }
     }
 }

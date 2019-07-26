@@ -11,11 +11,11 @@ import TemplateList from './Forms/Template/TemplateList';
 import ViewTemplate from './Forms/Template/ViewTemplate';
 import ApproveTemplate from './Forms/Template/ApproveTemplate';
 
-import CreateProjectForm from './Forms/Project/CreateProject';
+import CreateProjectForm from './Forms/Project/CreateProject/CreateProject';
 //import { CreateProjectHOC } from './Forms/Project/CreateProject';
 import ProjectList from './Forms/Project/ProjectList';
 import DraftList from './Forms/Project/DraftList';
-import ViewProject from './Forms/Project/ViewProject';
+import ViewProject from './Forms/Project/ViewProject/ViewProject';
 import ApproveProject from './Forms/Project/ApproveProject';
 
 import FlowSetting from './Forms/Flow/Setting';

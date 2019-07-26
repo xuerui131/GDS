@@ -13,6 +13,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using GDS.WebApi.Models;
+using Newtonsoft.Json;
 
 namespace GDS.WebApi.Controllers
 {
@@ -234,11 +235,71 @@ namespace GDS.WebApi.Controllers
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 更新任务
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateTask(TaskJsonRequest request)
+        {
+            var result = new ProjectPhaseBLL().GetDataById(request.projectPhaseId);
+
+            if (result == null)
+            {
+                return Json(new ResponseEntity<int>(false, "任务不存在", 0), JsonRequestBehavior.AllowGet);
+            }
+
+            var tasks = new List<Task>();
+
+            if (!string.IsNullOrEmpty(result.TaskJson))
+            {
+                tasks = JsonConvert.DeserializeObject<List<Task>>(result.TaskJson);
+            }
+
+            if (request.task.id != 0) //更新
+            {
+                var targetTask = tasks.FirstOrDefault(t => t.id == request.task.id);
+                if (targetTask.id != 0)
+                {
+                    targetTask.owner = request.task.owner;
+                    targetTask.description = request.task.description;
+                    targetTask.status = request.task.status;
+                }
+            }
+            else { //插入新的task
+                tasks.Add(request.task);
+            }
+
+            string taskJson = JsonConvert.SerializeObject(tasks);
+
+            var updateResult = new ProjectPhaseBLL().UpdateTask(request.projectPhaseId, taskJson);
+            var response = new ResponseEntity<int>(updateResult.Success, updateResult.Message, updateResult.Data);
+
+            new LogBLL().LogEvent(CurrenUserInfo.LoginName, GDS.Entity.Constant.ConstantDefine.ModuleProject,
+                 GDS.Entity.Constant.ConstantDefine.TypeUpdate, GDS.Entity.Constant.ConstantDefine.ActionUpdateProjectPhase, $"{request.projectPhaseId}");
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
     }
 
     public struct LinkedFormJsonRequest
     {   
         public int projectPhaseId { get; set; }
         public string linkedFormJson { get; set; }
+    }
+
+    public struct TaskJsonRequest
+    {
+        public int projectPhaseId { get; set; }
+        public Task task { get; set; }
+    }
+
+    public struct Task {
+        public int id { get; set; }
+        public string description { get; set; }
+        public string owner { get; set; }
+        public string status { get; set; }
     }
 }

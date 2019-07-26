@@ -1,8 +1,8 @@
 
 export const Constants = {
-
-    APIBaseUrl: "http://211.152.45.77:8081/",
-    APIBaseUrlDev: "http://localhost:21790/",
+    
+    APIBaseUrl: process.env.NODE_ENV === "production"? "http://211.152.45.77:8081/" : "http://localhost:21790/",
+    //APIBaseUrlDev: "http://localhost:21790/",
 
     UserNameLabel: "UserName",
     UserTypeStr:"UserType",
