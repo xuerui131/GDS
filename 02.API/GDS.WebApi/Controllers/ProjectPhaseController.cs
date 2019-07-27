@@ -248,7 +248,7 @@ namespace GDS.WebApi.Controllers
 
             if (result == null)
             {
-                return Json(new ResponseEntity<int>(false, "任务不存在", 0), JsonRequestBehavior.AllowGet);
+                return Json(new ResponseEntity<int>(false, "阶段不存在", 0), JsonRequestBehavior.AllowGet);
             }
 
             var tasks = new List<Task>();
@@ -258,13 +258,19 @@ namespace GDS.WebApi.Controllers
                 tasks = JsonConvert.DeserializeObject<List<Task>>(result.TaskJson);
             }
 
-            if (request.task.id != 0) //更新
+            if (!request.newTask) //更新
             {
                 var targetTask = tasks.FirstOrDefault(t => t.id == request.task.id);
                 if (targetTask.id != 0)
                 {
+                    targetTask.subject = request.task.subject;
+                    targetTask.log = request.task.log;
                     targetTask.owner = request.task.owner;
                     targetTask.description = request.task.description;
+                    targetTask.startTime = request.task.startTime;
+                    targetTask.endTime = request.task.endTime;
+                    targetTask.updateTime = request.task.updateTime;
+                    targetTask.workaround = request.task.workaround;
                     targetTask.status = request.task.status;
                 }
             }
@@ -282,6 +288,166 @@ namespace GDS.WebApi.Controllers
 
             return Json(response, JsonRequestBehavior.AllowGet);
         }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult DeleteTask(TaskJsonRequest request)
+        {
+            var result = new ProjectPhaseBLL().GetDataById(request.projectPhaseId);
+
+            if (result == null)
+            {
+                return Json(new ResponseEntity<int>(false, "阶段不存在", 0), JsonRequestBehavior.AllowGet);
+            }
+
+            var tasks = new List<Task>();
+
+            if (!string.IsNullOrEmpty(result.TaskJson))
+            {
+                tasks = JsonConvert.DeserializeObject<List<Task>>(result.TaskJson);
+            }
+
+            if (request.task.id != 0) //更新
+            {
+                var targetTask = tasks.FirstOrDefault(t => t.id == request.task.id);
+                tasks.Remove(targetTask);
+            }
+          
+            string taskJson = JsonConvert.SerializeObject(tasks);
+
+            var updateResult = new ProjectPhaseBLL().UpdateTask(request.projectPhaseId, taskJson);
+            var response = new ResponseEntity<int>(updateResult.Success, updateResult.Message, updateResult.Data);
+
+            new LogBLL().LogEvent(CurrenUserInfo.LoginName, GDS.Entity.Constant.ConstantDefine.ModuleProject,
+                 GDS.Entity.Constant.ConstantDefine.TypeUpdate, GDS.Entity.Constant.ConstantDefine.ActionUpdateProjectPhase, $"{request.projectPhaseId}");
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 任务分类
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetTaskSubjectList()
+        {
+            var tasksStr = new ProjectPhaseBLL().GetTaskSubjects();
+            var tasks = tasksStr.Split(';');
+            var response = new ResponseEntity<string[]>(true, "", tasks);
+            
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 更新风险
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateRisk(RiskJsonRequest request)
+        {
+            var result = new ProjectPhaseBLL().GetDataById(request.projectPhaseId);
+
+            if (result == null)
+            {
+                return Json(new ResponseEntity<int>(false, "阶段不存在", 0), JsonRequestBehavior.AllowGet);
+            }
+
+            var risks = new List<Risk>();
+
+            if (!string.IsNullOrEmpty(result.RiskJson))
+            {
+                risks = JsonConvert.DeserializeObject<List<Risk>>(result.RiskJson);
+            }
+
+            if (!request.newRisk) //更新
+            {
+                var targetRisk = risks.FirstOrDefault(t => t.id == request.risk.id);
+                if (targetRisk.id != 0)
+                {
+                    targetRisk.riskType = request.risk.riskType;
+                    targetRisk.severity = request.risk.severity;
+                    targetRisk.details = request.risk.details;
+                    targetRisk.nextSteps = request.risk.nextSteps;
+                    targetRisk.assignedTo = request.risk.assignedTo;
+                    targetRisk.targetDate = request.risk.targetDate;
+                    targetRisk.status = request.risk.status;
+                }
+            }
+            else
+            { //插入新的risk
+                risks.Add(request.risk);
+            }
+
+            string riskJson = JsonConvert.SerializeObject(risks);
+
+            var updateResult = new ProjectPhaseBLL().UpdateRisk(request.projectPhaseId, riskJson);
+            var response = new ResponseEntity<int>(updateResult.Success, updateResult.Message, updateResult.Data);
+
+            new LogBLL().LogEvent(CurrenUserInfo.LoginName, GDS.Entity.Constant.ConstantDefine.ModuleProject,
+                 GDS.Entity.Constant.ConstantDefine.TypeUpdate, GDS.Entity.Constant.ConstantDefine.ActionUpdateProjectPhase, $"{request.projectPhaseId}");
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult DeleteRisk(RiskJsonRequest request)
+        {
+            var result = new ProjectPhaseBLL().GetDataById(request.projectPhaseId);
+
+            if (result == null)
+            {
+                return Json(new ResponseEntity<int>(false, "阶段不存在", 0), JsonRequestBehavior.AllowGet);
+            }
+
+            var risks = new List<Risk>();
+
+            if (!string.IsNullOrEmpty(result.RiskJson))
+            {
+                risks = JsonConvert.DeserializeObject<List<Risk>>(result.RiskJson);
+            }
+
+            if (request.risk.id != 0) //更新
+            {
+                var targetRisk = risks.FirstOrDefault(t => t.id == request.risk.id);
+                risks.Remove(targetRisk);
+            }
+
+            string riskJson = JsonConvert.SerializeObject(risks);
+
+            var updateResult = new ProjectPhaseBLL().UpdateRisk(request.projectPhaseId, riskJson);
+            var response = new ResponseEntity<int>(updateResult.Success, updateResult.Message, updateResult.Data);
+
+            new LogBLL().LogEvent(CurrenUserInfo.LoginName, GDS.Entity.Constant.ConstantDefine.ModuleProject,
+                 GDS.Entity.Constant.ConstantDefine.TypeUpdate, GDS.Entity.Constant.ConstantDefine.ActionUpdateProjectPhase, $"{request.projectPhaseId}");
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 风险类别
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetRiskTypeList()
+        {
+            var riskTypes = new string[] { "issue" };
+            var response = new ResponseEntity<string[]>(true, "", riskTypes);
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 风险严重性
+        /// </summary>
+        /// <returns></returns>
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetRiskSeverityList()
+        {
+            var riskSeverities = new string[] { "L", "M", "H" };
+            var response = new ResponseEntity<string[]>(true, "", riskSeverities);
+
+            return Json(response, JsonRequestBehavior.AllowGet);
+        }
     }
 
     public struct LinkedFormJsonRequest
@@ -294,12 +460,96 @@ namespace GDS.WebApi.Controllers
     {
         public int projectPhaseId { get; set; }
         public Task task { get; set; }
+
+        public bool newTask { get; set; }
     }
 
-    public struct Task {
+    public class Task {
         public int id { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public string subject { get; set; }
+        /// <summary>
+        /// 任务描述
+        /// </summary>
         public string description { get; set; }
+
+        /// <summary>
+        /// 状态记录
+        /// </summary>
+        public string log { get; set; }
+
+        /// <summary>
+        /// 负责人
+        /// </summary>
         public string owner { get; set; }
+
+        /// <summary>
+        /// 开始日期
+        /// </summary>
+        public string startTime { get; set; }
+
+        /// <summary>
+        /// 完成日期
+        /// </summary>
+        public string endTime { get; set; }
+
+        /// <summary>
+        /// 变更日期
+        /// </summary>
+        public string updateTime { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public string status { get; set; }
+
+        /// <summary>
+        /// 变通方案
+        /// </summary>
+        public string workaround { get; set; }
+    }
+
+    public struct RiskJsonRequest {
+        public int projectPhaseId { get; set; }
+        public Risk risk { get; set; }
+
+        public bool newRisk { get; set; }
+    }
+    public class Risk {
+        public int id { get; set; }
+
+        /// <summary>
+        /// 风险类别
+        /// </summary>
+        public string riskType { get; set; }
+
+        /// <summary>
+        /// 严重性
+        /// </summary>
+        public string severity { get; set; }
+
+        /// <summary>
+        /// 风险描述
+        /// </summary>
+        public string details { get; set; }
+
+        /// <summary>
+        /// 后续工作计划
+        /// </summary>
+        public string nextSteps { get; set; }
+
+        /// <summary>
+        /// 责任人
+        /// </summary>
+        public string assignedTo { get; set; }
+
+        /// <summary>
+        /// 目标完成日期
+        /// </summary>
+        public string targetDate { get; set; }
+
         public string status { get; set; }
     }
 }

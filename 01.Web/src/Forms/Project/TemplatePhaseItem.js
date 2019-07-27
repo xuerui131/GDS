@@ -233,7 +233,7 @@ class TemplatePhaseItem extends React.Component {
             <span className="action">
               {this.props.data.Status == 1?
               <span className="canClick" onClick={() => this.openModal(record)}>填写</span>:
-              <soan>填写</soan>}        
+              <span>填写</span>}        
             </span>
           ),
         }

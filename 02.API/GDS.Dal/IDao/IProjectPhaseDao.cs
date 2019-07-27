@@ -11,5 +11,7 @@ namespace GDS.Dal
     public interface IProjectPhaseDao<T> : IDaoBase<T> where T : class
     {
         List<View_ProjectPhase> GetProjectPhaseListByProjectId(int ProjectId, int TemplateId);
+
+        string GetTaskSubjects();
     }
 }

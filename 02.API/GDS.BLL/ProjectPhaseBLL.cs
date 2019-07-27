@@ -356,6 +356,55 @@ namespace GDS.BLL
             return result;
         }
 
+        public ResultEntity<int> UpdateRisk(int Id, string riskJson)
+        {
+            ResultEntity<int> result;
+
+            try
+            {
+                int IntRet = 0;
+                var repResult = dal.Update<ProjectPhase>(new { RiskJson = riskJson }, it => it.Id == Id);
+
+                if (repResult)
+                {
+                    IntRet = 1;
+                }
+
+                if (IntRet > 0)
+                {
+
+                    result = new ResultEntity<int>(true, ConstantDefine.TipSaveSuccess, IntRet);
+                }
+                else
+                {
+                    result = new ResultEntity<int>(ConstantDefine.TipSaveFail);
+                }
+            }
+            catch (Exception ex)
+            {
+                Loger.LogErr(ex);
+                result = new ResultEntity<int>(ex.Message);
+            }
+
+            return result;
+        }
+
+        public string GetTaskSubjects()
+        {
+            try
+            {
+                var repResult = dal.GetTaskSubjects();
+
+                return repResult;
+            }
+            catch (Exception ex)
+            {
+                Loger.LogErr(ex);
+            }
+
+            return string.Empty;
+        }
+
         public ResultEntity<int> StartProjectPhase(int ProjectId)
         {
             ResultEntity<int> result;

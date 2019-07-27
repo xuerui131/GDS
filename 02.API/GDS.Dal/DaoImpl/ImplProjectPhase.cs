@@ -42,5 +42,26 @@ namespace GDS.Dal
 
 
         }
+
+        public string GetTaskSubjects()
+        {
+            try
+            {
+                using (var db = SugarDao.GetInstance())
+                {
+                    db.IsNoLock = true;
+                    var subjectStr = db.GetString(@"select [value] from dbo.Settings where [key]='TaskSubjects'");
+
+                    return subjectStr;
+                }
+            }
+            catch (Exception ex)
+            {
+                Loger.LogErr(ex);
+                return null;
+            }
+
+
+        }
     }
 }

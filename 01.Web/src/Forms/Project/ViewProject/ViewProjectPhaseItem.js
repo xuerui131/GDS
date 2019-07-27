@@ -10,7 +10,7 @@ import { Router, Route, Switch, Link } from 'react-router-dom';
 
 import { createForm } from "rc-form";
 
-import ViewProjectPhaseTask from './ViewProjectPhaseTask';
+import ViewProjectPhaseTaskForm from './ViewProjectPhaseTask';
 
 const { TabPane } = Tabs;
 
@@ -141,7 +141,10 @@ class ViewProjectPhaseItem extends React.Component {
         formContentObj: [], //将要填写的表单，由一系列的Lable、Input组成
         formId: 0, //将要填写的表单ID
         isFormReviewModalVisible: false,
-        formReviewContentObj: {}
+        formReviewContentObj: {},
+
+        isTaskModalVisible: false,
+        selectedPhase: {}
         //formItems: []
     }
     componentDidMount() {
@@ -234,7 +237,7 @@ class ViewProjectPhaseItem extends React.Component {
             <span className="action">
               {this.props.data.Status == 1?
               <span className="canClick" onClick={() => this.openModal(record)}>填写</span>:
-              <soan>填写</soan>}        
+              <span>填写</span>}        
             </span>
           ),
         }
@@ -260,15 +263,6 @@ class ViewProjectPhaseItem extends React.Component {
           },
         ];
     
-        // const data = [];
-        // for (let i = 0; i < 3; ++i) {
-        //   data.push({
-        //     key: i,
-        //     date: '2014-12-24 23:12:00',
-        //     name: 'This is production name',
-        //     upgradeNum: 'Upgraded: 56',
-        //   });
-        // }
         return <Table columns={columns} dataSource={record.subData} pagination={false} />;
       };
     
@@ -326,16 +320,6 @@ class ViewProjectPhaseItem extends React.Component {
 
     onPMApprove = (record) =>
     {
-        console.log("onPMApprove", record);
-        // if(!record.pmApproval)
-        // {
-        //     record.pmApproval = true;
-        // }
-        // else
-        // {
-        //     record.pmApproval = false;
-        // }
-
         if(this.state.docListObj && Array.isArray(this.state.docListObj))
         {
             let newDocListObj = [];
@@ -547,6 +531,16 @@ class ViewProjectPhaseItem extends React.Component {
         });
     }
 
+    afterSaveTask(taskJson)
+    {
+        let selectedPhase = this.state.selectedPhase;
+        selectedPhase.TaskJson = taskJson;
+
+        this.setState({
+            selectedPhase
+        });
+    }
+
     render() {
         const formItemLayout = {
             labelCol: {
@@ -623,7 +617,20 @@ class ViewProjectPhaseItem extends React.Component {
             <div>
                 <Form {...formItemLayout} style={{ marginRight: "20px" }}>
                     <div>
-                        {this.props.data[this.statusField] == 1?  <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{left:'80%'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> : null}
+                        {this.props.data[this.statusField] == 1?  
+                        <div>
+                            <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{left:'80%'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> 
+                            <Button loading={this.state.isSaving} style={{left:'80%', marginLeft:'5px'}} type="primary" 
+                            onClick={
+                                ()=>{
+                                    this.setState({
+                                        isTaskModalVisible: true,
+                                        selectedPhase: this.props.data
+                                    })
+                                }}
+                            >任务管理</Button> 
+                        </div>
+                        : null}
                         {this.props.data[this.statusField] == 2?  <span style={{display:'block', textAlign:'right', color:'green', fontWeight:'bold'}}>已完成</span> : null}
                     </div>
                     <Form.Item label="项目阶段名称">
@@ -647,24 +654,6 @@ class ViewProjectPhaseItem extends React.Component {
                     <Form.Item label="计划结束时间">
                         <span >{this.props.data[this.fieldPlannedEndTime]}</span>
                     </Form.Item>
-                    {/* <Row gutter={8}>
-                      <Col span={6}>                        
-                              <span>
-                                  必要内容&nbsp;
-                              </span>                        
-                      </Col>   
-                      <Col span={6}>
-                        <Form.Item>
-                        {this.props.data[hasDocListField]? <Checkbox disabled checked>文档列表</Checkbox>:<Checkbox disabled>文档列表</Checkbox>}
-                        </Form.Item>
-                      </Col>   
-                      <Col span={6}>
-                      <Form.Item>
-                          {this.props.data[hasLinkedFormField]? <Checkbox disabled checked>关联表单</Checkbox>:<Checkbox disabled>关联表单</Checkbox>}
-                        </Form.Item>
-                      </Col>   
-                    </Row> */}
-                    
                 </Form>
                 
                     {this.props.data[this.docListField]? 
@@ -676,10 +665,38 @@ class ViewProjectPhaseItem extends React.Component {
                         <Table style={{width:'100%'}} pagination={false} expandedRowRender={this.expandedRowRender}
                         columns={this.linkedFormColumns} dataSource={this.state.linkedFormObj}>关联表单</Table>
                     :null}
-
-                    <hr />
-                    <ViewProjectPhaseTask data={this.props.data.TaskJson} inProgress={this.props.data[this.statusField] === Constants.InProgress}></ViewProjectPhaseTask>
-
+                                        
+                <Modal
+                    title="任务管理"
+                    visible={this.state.isTaskModalVisible}
+                    closable={false}
+                    width="95%"
+                    // footer={
+                    // <div>
+                    //     <Button onClick={this.saveForm.bind(this)} type="primary" style={{marginRight:'10px'}}>提交</Button>
+                    //     <Button type="primary" onClick={()=>{
+                    //         this.setState({
+                    //             isTaskModalVisible: false
+                    //         });
+                    //     }}>关闭</Button>
+                    // </div>
+                    footer = {[
+                        // <Button key="back" onClick={this.handleCancel}>
+                        // Return
+                        // </Button>,
+                        <Button key="submit" type="primary" onClick={() => {
+                            this.setState({ 
+                            isTaskModalVisible: false });
+                            }}>
+                        关闭
+                        </Button>,
+                    ]}
+                    //onCancel={() => this.setState({ isTaskModalVisible: false })
+                    //}
+                   
+                >
+                    <ViewProjectPhaseTaskForm projectPhaseId={this.state.selectedPhase.Id} data={this.state.selectedPhase.TaskJson} inProgress={this.state.selectedPhase[this.statusField] === Constants.InProgress} afterSaveTask={this.afterSaveTask.bind(this)}></ViewProjectPhaseTaskForm>
+                </Modal>  
                 <Modal
                     title="表单预览"
                     visible={this.state.isFormModalVisible}
