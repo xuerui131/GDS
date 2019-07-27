@@ -367,7 +367,7 @@ namespace GDS.WebApi.Controllers
                 {
                     targetRisk.riskType = request.risk.riskType;
                     targetRisk.severity = request.risk.severity;
-                    targetRisk.details = request.risk.details;
+                    targetRisk.detail = request.risk.detail;
                     targetRisk.nextSteps = request.risk.nextSteps;
                     targetRisk.assignedTo = request.risk.assignedTo;
                     targetRisk.targetDate = request.risk.targetDate;
@@ -431,7 +431,8 @@ namespace GDS.WebApi.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetRiskTypeList()
         {
-            var riskTypes = new string[] { "issue" };
+            var riskTypeStr = new ProjectPhaseBLL().getRiskSettings("TaskRiskType");
+            var riskTypes = riskTypeStr.Split(';');
             var response = new ResponseEntity<string[]>(true, "", riskTypes);
 
             return Json(response, JsonRequestBehavior.AllowGet);
@@ -444,7 +445,8 @@ namespace GDS.WebApi.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetRiskSeverityList()
         {
-            var riskSeverities = new string[] { "L", "M", "H" };
+            var riskSeveritiesStr = new ProjectPhaseBLL().getRiskSettings("TaskRiskSeverity");
+            var riskSeverities = riskSeveritiesStr.Split(';');
             var response = new ResponseEntity<string[]>(true, "", riskSeverities);
 
             return Json(response, JsonRequestBehavior.AllowGet);
@@ -540,7 +542,7 @@ namespace GDS.WebApi.Controllers
         /// <summary>
         /// 风险描述
         /// </summary>
-        public string details { get; set; }
+        public string detail { get; set; }
 
         /// <summary>
         /// 后续工作计划
@@ -558,5 +560,10 @@ namespace GDS.WebApi.Controllers
         public string targetDate { get; set; }
 
         public string status { get; set; }
+
+        /// <summary>
+        /// 应急预案
+        /// </summary>
+        public string workaround { get; set; }
     }
 }

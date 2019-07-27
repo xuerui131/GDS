@@ -63,5 +63,26 @@ namespace GDS.Dal
 
 
         }
+
+        public string GetRiskSetting(string key)
+        {
+            try
+            {
+                using (var db = SugarDao.GetInstance())
+                {
+                    db.IsNoLock = true;
+                    var subjectStr = db.GetString(@"select [value] from dbo.Settings where [key]=@key", new { key });
+
+                    return subjectStr;
+                }
+            }
+            catch (Exception ex)
+            {
+                Loger.LogErr(ex);
+                return null;
+            }
+
+
+        }
     }
 }

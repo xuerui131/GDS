@@ -12,6 +12,8 @@ import { createForm } from "rc-form";
 
 import ViewProjectPhaseTaskForm from './ViewProjectPhaseTask';
 
+import ViewProjectPhaseRiskForm from './ViewProjectPhaseRisk';
+
 const { TabPane } = Tabs;
 
 const { Option } = Select;
@@ -144,6 +146,7 @@ class ViewProjectPhaseItem extends React.Component {
         formReviewContentObj: {},
 
         isTaskModalVisible: false,
+        isRiskModalVisible: false,
         selectedPhase: {}
         //formItems: []
     }
@@ -541,6 +544,16 @@ class ViewProjectPhaseItem extends React.Component {
         });
     }
 
+    afterSaveRisk(riskJson)
+    {
+        let selectedPhase = this.state.selectedPhase;
+        selectedPhase.RiskJson = riskJson;
+
+        this.setState({
+            selectedPhase
+        });
+    }
+
     render() {
         const formItemLayout = {
             labelCol: {
@@ -619,7 +632,30 @@ class ViewProjectPhaseItem extends React.Component {
                     <div>
                         {this.props.data[this.statusField] == 1?  
                         <div>
-                            <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{left:'80%'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> 
+                            <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{left:'75%'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> 
+                            <Button loading={this.state.isSaving} style={{left:'75%', marginLeft:'5px'}} type="primary" 
+                            onClick={
+                                ()=>{
+                                    this.setState({
+                                        isTaskModalVisible: true,
+                                        selectedPhase: this.props.data
+                                    })
+                                }}
+                            >任务管理</Button> 
+                            <Button loading={this.state.isSaving} style={{left:'75%', marginLeft:'5px'}} type="primary" 
+                            onClick={
+                                ()=>{
+                                    this.setState({
+                                        isRiskModalVisible: true,
+                                        selectedPhase: this.props.data
+                                    })
+                                }}
+                            >风险管理</Button> 
+                        </div>
+                        : null}
+                        {this.props.data[this.statusField] == 2?  
+                        <div>
+                            <span style={{display:'block', textAlign:'right', color:'green', fontWeight:'bold'}}>已完成</span>
                             <Button loading={this.state.isSaving} style={{left:'80%', marginLeft:'5px'}} type="primary" 
                             onClick={
                                 ()=>{
@@ -629,9 +665,7 @@ class ViewProjectPhaseItem extends React.Component {
                                     })
                                 }}
                             >任务管理</Button> 
-                        </div>
-                        : null}
-                        {this.props.data[this.statusField] == 2?  <span style={{display:'block', textAlign:'right', color:'green', fontWeight:'bold'}}>已完成</span> : null}
+                        </div> : null}
                     </div>
                     <Form.Item label="项目阶段名称">
                        <span>{this.props.data[this.fieldName]}</span>
@@ -671,19 +705,7 @@ class ViewProjectPhaseItem extends React.Component {
                     visible={this.state.isTaskModalVisible}
                     closable={false}
                     width="95%"
-                    // footer={
-                    // <div>
-                    //     <Button onClick={this.saveForm.bind(this)} type="primary" style={{marginRight:'10px'}}>提交</Button>
-                    //     <Button type="primary" onClick={()=>{
-                    //         this.setState({
-                    //             isTaskModalVisible: false
-                    //         });
-                    //     }}>关闭</Button>
-                    // </div>
                     footer = {[
-                        // <Button key="back" onClick={this.handleCancel}>
-                        // Return
-                        // </Button>,
                         <Button key="submit" type="primary" onClick={() => {
                             this.setState({ 
                             isTaskModalVisible: false });
@@ -691,11 +713,24 @@ class ViewProjectPhaseItem extends React.Component {
                         关闭
                         </Button>,
                     ]}
-                    //onCancel={() => this.setState({ isTaskModalVisible: false })
-                    //}
-                   
                 >
                     <ViewProjectPhaseTaskForm projectPhaseId={this.state.selectedPhase.Id} data={this.state.selectedPhase.TaskJson} inProgress={this.state.selectedPhase[this.statusField] === Constants.InProgress} afterSaveTask={this.afterSaveTask.bind(this)}></ViewProjectPhaseTaskForm>
+                </Modal>  
+                <Modal
+                    title="风险管理"
+                    visible={this.state.isRiskModalVisible}
+                    closable={false}
+                    width="95%"
+                    footer = {[
+                        <Button key="submit" type="primary" onClick={() => {
+                            this.setState({ 
+                                isRiskModalVisible: false });
+                            }}>
+                        关闭
+                        </Button>,
+                    ]}
+                >
+                    <ViewProjectPhaseRiskForm projectPhaseId={this.state.selectedPhase.Id} data={this.state.selectedPhase.RiskJson} inProgress={this.state.selectedPhase[this.statusField] === Constants.InProgress} afterSaveRisk={this.afterSaveRisk.bind(this)}></ViewProjectPhaseRiskForm>
                 </Modal>  
                 <Modal
                     title="表单预览"

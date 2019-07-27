@@ -34,14 +34,15 @@ const { TextArea, Search } = Input;
 };
 
 
-class ViewProjectPhaseTask extends React.Component {
+class ViewProjectPhaseRisk extends React.Component {
     state={
         dataSource: [],
-        isAddTaskModalVisible: false,
+        isAddRiskModalVisible: false,
         allUsers: [],
-        subjects: [],
+        riskTypes: [], //风险类别
+        severities: [], //严重性
 
-        isEditTaskModalVisible: false,
+        isEditRiskModalVisible: false,
         editRecord: {}
     }
 
@@ -56,7 +57,8 @@ class ViewProjectPhaseTask extends React.Component {
         }
 
         this.getAllUsers();
-        this.getTaskSubjectList();
+        this.getRiskTypes();
+        this.getSeverities();
     }
 
     componentWillReceiveProps(nextProps){
@@ -69,9 +71,9 @@ class ViewProjectPhaseTask extends React.Component {
         }
     }
 
-    getTaskSubjectList()
+    getRiskTypes()
     {
-        axios.get(`${Constants.APIBaseUrl}/ProjectPhase/GetTaskSubjectList`, {
+        axios.get(`${Constants.APIBaseUrl}/ProjectPhase/GetRiskTypeList`, {
             headers: { 'Content-Type': 'application/json' }
         }).then(res => {
             if (!res || !res.data || !res.data.Data) {
@@ -79,10 +81,26 @@ class ViewProjectPhaseTask extends React.Component {
             }
           
             this.setState({
-                subjects:res.data.Data
+                riskTypes:res.data.Data
             });
         })
     }
+
+    getSeverities()
+    {
+        axios.get(`${Constants.APIBaseUrl}/ProjectPhase/GetRiskSeverityList`, {
+            headers: { 'Content-Type': 'application/json' }
+        }).then(res => {
+            if (!res || !res.data || !res.data.Data) {
+                return;
+            }
+          
+            this.setState({
+                severities:res.data.Data
+            });
+        })
+    }
+
 
     getAllUsers() {
         axios.get(`${Constants.APIBaseUrl}/Users/GetAllUsers`, {
@@ -101,7 +119,7 @@ class ViewProjectPhaseTask extends React.Component {
         })
     }
 
-    canAddTask(){
+    canAddRisk(){
         if((localStorage[Constants.UserTypeStr]===Constants.AdminRole || localStorage[Constants.UserTypeStr]===Constants.PMRole)
         && this.props.inProgress)
         {
@@ -111,7 +129,7 @@ class ViewProjectPhaseTask extends React.Component {
         return false;
     }
 
-    handleAddTask()
+    handleAddRisk()
     {
         let that = this;
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -122,36 +140,36 @@ class ViewProjectPhaseTask extends React.Component {
                     id = that.state.dataSource[that.state.dataSource.length - 1].id + 1;
                 }
 
-                let task = {
+                let risk = {
                     id: id,
-                    subject: values.subject,
-                    description: values.description,
+                    riskType: values.riskType,
+                    severity: values.severity,
                     detail: values.detail,
-                    owner: values.owner,
+                    assignedTo: values.assignedTo,
                     status: taskStatus[0]
                 }
 
-                let tasks = this.state.dataSource;
-                tasks.push(task);
+                let risks = this.state.dataSource;
+                risks.push(risk);
 
                 let body = {
                     projectPhaseId: this.props.projectPhaseId,
-                    newTask: true,
-                    task: { id: id, status: taskStatus[0], ...values }
+                    newRisk: true,
+                    risk: { id: id, status: taskStatus[0], ...values }
                 }
                
-                axios.post(`${Constants.APIBaseUrl}/ProjectPhase/UpdateTask`, body, {
+                axios.post(`${Constants.APIBaseUrl}/ProjectPhase/UpdateRisk`, body, {
                     headers: { 'Content-Type': 'application/json' }
                 })
                     .then(res => {
                         that.setState({ 
-                            isAddTaskModalVisible: false,
-                            dataSource: tasks
+                            isAddRiskModalVisible: false,
+                            dataSource: risks
                         });
 
-                        if(this.props.afterSaveTask)
+                        if(this.props.afterSaveRisk)
                         {
-                            this.props.afterSaveTask(JSON.stringify(tasks));
+                            this.props.afterSaveRisk(JSON.stringify(risks));
                         }
                     })
                     .catch(function (error) {
@@ -161,7 +179,7 @@ class ViewProjectPhaseTask extends React.Component {
                         notification.open({
                             message: '保存失败',
                             description:
-                                '保存任务失败',
+                                '保存风险失败',
                             onClick: () => {
                                 //console.log('Notification Clicked!');
                             },
@@ -174,39 +192,36 @@ class ViewProjectPhaseTask extends React.Component {
         });
     }
 
-    handleEditTask() {
+    handleEditRisk() {
         let that = this;
 
-        let tasks = this.state.dataSource;
-        let editTask = tasks.filter(t => t.id === this.state.editRecord.id)[0];
+        let risks = this.state.dataSource;
+        let editRisk = risks.filter(t => t.id === this.state.editRecord.id)[0];
 
-        editTask.log = this.state.editRecord.log;
-        editTask.startTime = this.state.editRecord.startTime;
-        editTask.endTime = this.state.editRecord.endTime;
-        editTask.updateTime = this.state.editRecord.updateTime;
-        editTask.status = this.state.editRecord.status;
-        editTask.workaround = this.state.editRecord.workaround;
+        editRisk.nextSteps = this.state.editRecord.nextSteps;
+        editRisk.status = this.state.editRecord.status;
+        editRisk.workaround = this.state.editRecord.workaround;
 
         this.setState({
-            dataSource: tasks
+            dataSource: risks
         });
 
         let body = {
             projectPhaseId: this.props.projectPhaseId,
-            newTask: false,
-            task: { ...this.state.editRecord }
+            newRisk: false,
+            risk: { ...this.state.editRecord }
         }
 
-        axios.post(`${Constants.APIBaseUrl}/ProjectPhase/UpdateTask`, body, {
+        axios.post(`${Constants.APIBaseUrl}/ProjectPhase/UpdateRisk`, body, {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(res => {
                 that.setState({
-                    isEditTaskModalVisible: false,
+                    isEditRiskModalVisible: false,
                 });
 
-                if (this.props.afterSaveTask) {
-                    this.props.afterSaveTask(JSON.stringify(tasks));
+                if (this.props.afterSaveRisk) {
+                    this.props.afterSaveRisk(JSON.stringify(risks));
                 }
             })
             .catch(function (error) {
@@ -216,7 +231,7 @@ class ViewProjectPhaseTask extends React.Component {
                 notification.open({
                     message: '保存失败',
                     description:
-                        '保存任务失败',
+                        '保存风险失败',
                     onClick: () => {
                         //console.log('Notification Clicked!');
                     },
@@ -228,14 +243,13 @@ class ViewProjectPhaseTask extends React.Component {
     clearAddModal(){
         this.props.form.setFieldsValue(
             {
-                subject: '',
-                description: '',
-                log: '',
-                owner: ''
+                riskType: '',
+                severity: '',
+                assignedTo: ''
             })
     }
 
-    deleteTaskHandler(taskId)
+    deleteRiskHandler(riskId)
     {
         if(!window.confirm("确定删除?"))
         {
@@ -243,34 +257,34 @@ class ViewProjectPhaseTask extends React.Component {
         }
         let body = {
             projectPhaseId: this.props.projectPhaseId,
-            task:{
-                id: taskId
+            risk:{
+                id: riskId
             }
         }
        
         let that = this;
-        axios.post(`${Constants.APIBaseUrl}/ProjectPhase/DeleteTask`, body, {
+        axios.post(`${Constants.APIBaseUrl}/ProjectPhase/DeleteRisk`, body, {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(res => {
 
-                let tasks = this.state.dataSource;
-                let tempTasks = [];
-                tasks.forEach(task => {
-                    if(task.id != taskId)
+                let risks = this.state.dataSource;
+                let tempRisks = [];
+                risks.forEach(risk => {
+                    if(risk.id != riskId)
                     {
-                        tempTasks.push(task);
+                        tempRisks.push(risk);
                     }
                 })
 
                 that.setState({ 
-                    isAddTaskModalVisible: false,
-                    dataSource: tempTasks
+                    isAddRiskModalVisible: false,
+                    dataSource: tempRisks
                 });
 
-                if(this.props.afterSaveTask)
+                if(this.props.afterSaveRisk)
                 {
-                    this.props.afterSaveTask(JSON.stringify(tempTasks));
+                    this.props.afterSaveRisk(JSON.stringify(tempRisks));
                 }
             })
             .catch(function (error) {
@@ -291,69 +305,52 @@ class ViewProjectPhaseTask extends React.Component {
     
     }
 
-    taskColumns = [
+    riskColumns = [
         {
             title: '#',
             dataIndex: 'id',
             width: '2%',
         },
         {
-            title: '分类',
-            dataIndex: 'subject',
+            title: '类别',
+            dataIndex: 'riskType',
             width: '8%',
         },
         {
-            title: '任务项/详情',
-            dataIndex: 'description',
-            width: '16%',
-            render: (text, record) => (
-                <div>
-                    <span>{record.description}</span>
-                    <TextArea disabled row={2}>{record.detail}</TextArea>
-                </div>
-              )
+            title: '严重性',
+            dataIndex: 'severity',
+            width: '8%',
         },
         {
-          title: '状态记录',
-          dataIndex: 'log',
+          title: '问题//风险描述',
+          dataIndex: 'detail',
           width: '8%',
         },
         {
+            title: '后续工作计划',
+            dataIndex: 'nextSteps',
+            width: '6%',
+          },
+        {
           title: '负责人',
-          dataIndex: 'owner',
+          dataIndex: 'assignedTo',
           width: '6%',
         },
         {
-            title: '开始日期',
-            dataIndex: 'startTime',
+            title: '目标完成日期',
+            dataIndex: 'targetDate',
             width: '12%',
             render: (text, record) => (
-                <DatePicker disabled value={record.startTime? moment(record.startTime) : null}></DatePicker> 
+                <DatePicker disabled value={record.targetDate? moment(record.targetDate) : null}></DatePicker> 
               )
-          },
-          {
-            title: '完成日期',
-            dataIndex: 'endTime',
-            width: '12%',
-            render: (text, record) => (
-                <DatePicker disabled value={record.endTime? moment(record.endTime) : null}></DatePicker> 
-              )
-          },
-          {
-            title: '变更日期',
-            dataIndex: 'updateTime',
-            width: '12%',
-            render: (text, record) => (
-                <DatePicker disabled value={record.updateTime? moment(record.updateTime) : null}></DatePicker> 
-              )
-          },
+          },         
         {
           title: '状态',
           dataIndex: 'status',
           width: '8%',
         },
         {
-            title: '变通方案',
+            title: '应急预案',
             dataIndex: 'workaround',
           },
           {
@@ -363,22 +360,21 @@ class ViewProjectPhaseTask extends React.Component {
             render: (text, record) => (
                 <span className="action">
                 {
-                    (((localStorage[Constants.UserTypeStr]===Constants.AdminRole || localStorage[Constants.UserTypeStr]===Constants.PMRole)
-                    || record.owner === localStorage[Constants.UserNameLabel]) && (this.props.inProgress || localStorage[Constants.UserTypeStr]===Constants.AdminRole))?
+                    ((localStorage[Constants.UserTypeStr]===Constants.AdminRole || localStorage[Constants.UserTypeStr]===Constants.PMRole)
+                    || record.assignedTo === localStorage[Constants.UserNameLabel])?
                     <span className="canClick" onClick={() => {
                         let recordCopyStr = JSON.stringify(record);
                         let recordCopy = JSON.parse(recordCopyStr);
 
                         this.setState({
                         editRecord: recordCopy,
-                        isEditTaskModalVisible: true
+                        isEditRiskModalVisible: true
                     })}}>编辑</span> 
                     : null
                 }
                 {
-                    ((localStorage[Constants.UserTypeStr]===Constants.AdminRole || localStorage[Constants.UserTypeStr]===Constants.PMRole)
-                    && this.props.inProgress)?
-                    <span className="canClick" style={{marginLeft:'5px'}} onClick={() => this.deleteTaskHandler(record.id)}>删除</span> 
+                    (localStorage[Constants.UserTypeStr]===Constants.AdminRole || localStorage[Constants.UserTypeStr]===Constants.PMRole)?
+                    <span className="canClick" style={{marginLeft:'5px'}} onClick={() => this.deleteRiskHandler(record.id)}>删除</span> 
                     : null
                 }
                 
@@ -396,28 +392,28 @@ class ViewProjectPhaseTask extends React.Component {
             <div>
                 <div style={{textAlign:"center"}}>
                     <Table style={{width:'100%'}} pagination={false} 
-                    columns={this.taskColumns} dataSource={this.state.dataSource}
+                    columns={this.riskColumns} dataSource={this.state.dataSource}
                     locale={{
                         emptyText: '暂无数据',
                     }}></Table>
                 </div>
                 <div>
-                    {this.canAddTask() ? <Button onClick={()=>{
+                    {this.canAddRisk() ? <Button onClick={()=>{
                         this.clearAddModal();
                         this.setState({
-                            isAddTaskModalVisible: true
+                            isAddRiskModalVisible: true
                         })
                     }} type="primary">添加任务</Button> : null}
                 </div>
                 <Modal
-                    title="添加任务"
-                    visible={this.state.isAddTaskModalVisible}
+                    title="添加风险"
+                    visible={this.state.isAddRiskModalVisible}
                     closable={false}
                     footer = {[
-                        <Button key="back" onClick={ () => {this.setState({ isAddTaskModalVisible: false })} }>
+                        <Button key="back" onClick={ () => {this.setState({ isAddRiskModalVisible: false })} }>
                         取消
                         </Button>,
-                        <Button key="submit" type="primary" onClick={this.handleAddTask.bind(this)}>
+                        <Button key="submit" type="primary" onClick={this.handleAddRisk.bind(this)}>
                         添加
                         </Button>
                     ]}
@@ -430,11 +426,11 @@ class ViewProjectPhaseTask extends React.Component {
                             </span>
                             }
                         >
-                        {getFieldDecorator('subject', {
+                        {getFieldDecorator('riskType', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请选择分类',
+                                        message: '请选择风险类别',
                                     },
                                 ],
                                 //initialValue: this.props.data && this.props.data["subject"] ? this.props.data["subject"] : null
@@ -442,7 +438,7 @@ class ViewProjectPhaseTask extends React.Component {
                             })(
                                     <Select>
                                         {
-                                            this.state.subjects.map( s=>
+                                            this.state.riskType.map( s=>
                                                 <Option value={s}>{s}</Option>
                                             )
                                         }
@@ -452,7 +448,7 @@ class ViewProjectPhaseTask extends React.Component {
                         <Form.Item
                             label={
                                 <span>
-                                    任务项&nbsp;
+                                    严重性&nbsp;
                             </span>
                             }
                         >
@@ -460,17 +456,23 @@ class ViewProjectPhaseTask extends React.Component {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写任务项',
+                                        message: '请选择严重性',
                                     },
                                 ],
                                 //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
                                 //,
-                            })(<Input></Input>)}                    
+                            })( <Select>
+                                        {
+                                            this.state.severities.map( s=>
+                                                <Option value={s}>{s}</Option>
+                                            )
+                                        }
+                                    </Select> )}                    
                         </Form.Item>
                         <Form.Item
                             label={
                                 <span>
-                                    任务详情&nbsp;
+                                    风险描述&nbsp;
                             </span>
                             }
                         >
@@ -478,23 +480,22 @@ class ViewProjectPhaseTask extends React.Component {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写任务详情',
+                                        message: '请填写风险描述',
                                     },
                                 ],
                                 //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
                                 //,
-                            })(<TextArea rows={2} />)}
+                            })(<Input />)}
                             
                         </Form.Item>
-                        <Form.Item label="负责人">
-                        {getFieldDecorator('owner', {
+                        <Form.Item label="责任人">
+                        {getFieldDecorator('assignedTo', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请选择负责人',
+                                        message: '请选择责任人',
                                     },
                                 ],
-                                //initialValue: this.props.data && this.props.data["owner"] ? this.props.data["owner"] : null
                             })(
                                 <AutoComplete
                                 dataSource={this.state.allUsers}
@@ -506,18 +507,17 @@ class ViewProjectPhaseTask extends React.Component {
                             />
                                 )}
                         </Form.Item>
-                      
                     </Form>
                 </Modal>
                 <Modal
-                    title="编辑任务"
-                    visible={this.state.isEditTaskModalVisible}
+                    title="编辑风险"
+                    visible={this.state.isEditRiskModalVisible}
                     closable={false}
                     footer = {[
-                        <Button key="back" onClick={ () => {this.setState({ isEditTaskModalVisible: false })} }>
+                        <Button key="back" onClick={ () => {this.setState({ isEditRiskModalVisible: false })} }>
                         取消
                         </Button>,
-                        <Button key="submit" type="primary" onClick={this.handleEditTask.bind(this)}>
+                        <Button key="submit" type="primary" onClick={this.handleEditRisk.bind(this)}>
                         保存
                         </Button>
                     ]}
@@ -526,13 +526,13 @@ class ViewProjectPhaseTask extends React.Component {
                         <Form.Item
                             label={
                                 <span>
-                                    状态记录&nbsp;
+                                    后续步骤&nbsp;
                             </span>
                             }
                         >
-                        <Input defaultValue={this.state.editRecord.log} onChange={ (e)=>{
+                        <Input defaultValue={this.state.editRecord.nextSteps} onChange={ (e)=>{
                             let record = this.state.editRecord;
-                            record.log = e.target.value
+                            record.nextSteps = e.target.value
                              this.setState({
                                 editRecord: record
                             })
@@ -541,13 +541,13 @@ class ViewProjectPhaseTask extends React.Component {
                         <Form.Item
                             label={
                                 <span>
-                                    开始日期&nbsp;
+                                    目标完成日期&nbsp;
                             </span>
                             }
                         >
-                        <DatePicker defaultValue={this.state.editRecord.startTime? moment(this.state.editRecord.startTime) : null} onChange={ (e)=>{
+                        <DatePicker defaultValue={this.state.editRecord.targetDate? moment(this.state.editRecord.targetDate) : null} onChange={ (e)=>{
                             let record = this.state.editRecord;
-                            record.startTime = e
+                            record.targetDate = e
                              this.setState({
                                 editRecord: record
                             })
@@ -556,52 +556,7 @@ class ViewProjectPhaseTask extends React.Component {
                         <Form.Item
                             label={
                                 <span>
-                                    完成日期&nbsp;
-                            </span>
-                            }
-                        >
-                        <DatePicker defaultValue={this.state.editRecord.endTime? moment(this.state.editRecord.endTime) : null} onChange={ (e)=>{
-                            let record = this.state.editRecord;
-                            record.endTime = e
-                             this.setState({
-                                editRecord: record
-                            })
-                        } }></DatePicker>
-                        </Form.Item>
-                        <Form.Item
-                            label={
-                                <span>
-                                    变更日期&nbsp;
-                            </span>
-                            }
-                        >
-                        <DatePicker defaultValue={this.state.editRecord.updateTime? moment(this.state.editRecord.updateTime) : null} onChange={ (e)=>{
-                            let record = this.state.editRecord;
-                            record.updateTime = e
-                             this.setState({
-                                editRecord: record
-                            })
-                        } }></DatePicker>                    
-                        </Form.Item>
-                        <Form.Item
-                            label={
-                                <span>
-                                    状态&nbsp;
-                            </span>
-                            }
-                        >
-                        <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
-                            let record = this.state.editRecord;
-                            record.status = e.target.value
-                             this.setState({
-                                editRecord: record
-                            })
-                        } }></Input>
-                        </Form.Item>
-                        <Form.Item
-                            label={
-                                <span>
-                                    变通方案&nbsp;
+                                    应急预案&nbsp;
                             </span>
                             }
                         >
@@ -620,6 +575,6 @@ class ViewProjectPhaseTask extends React.Component {
     }
 }
 
-const ViewProjectPhaseTaskForm = Form.create()(ViewProjectPhaseTask);
+const ViewProjectPhaseRiskForm = Form.create()(ViewProjectPhaseRisk);
 
-export default ViewProjectPhaseTaskForm;
+export default ViewProjectPhaseRiskForm;

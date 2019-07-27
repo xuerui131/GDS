@@ -405,6 +405,22 @@ namespace GDS.BLL
             return string.Empty;
         }
 
+        public string getRiskSettings(string key)
+        {
+            try
+            {
+                var repResult = dal.GetRiskSetting(key);
+
+                return repResult;
+            }
+            catch (Exception ex)
+            {
+                Loger.LogErr(ex);
+            }
+
+            return string.Empty;
+        }
+
         public ResultEntity<int> StartProjectPhase(int ProjectId)
         {
             ResultEntity<int> result;

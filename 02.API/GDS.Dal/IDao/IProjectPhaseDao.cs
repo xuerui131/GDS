@@ -13,5 +13,7 @@ namespace GDS.Dal
         List<View_ProjectPhase> GetProjectPhaseListByProjectId(int ProjectId, int TemplateId);
 
         string GetTaskSubjects();
+
+        string GetRiskSetting(string key);
     }
 }
