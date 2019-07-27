@@ -267,6 +267,7 @@ namespace GDS.WebApi.Controllers
                     targetTask.log = request.task.log;
                     targetTask.owner = request.task.owner;
                     targetTask.description = request.task.description;
+                    targetTask.detail = request.task.detail;
                     targetTask.startTime = request.task.startTime;
                     targetTask.endTime = request.task.endTime;
                     targetTask.updateTime = request.task.updateTime;
@@ -470,6 +471,12 @@ namespace GDS.WebApi.Controllers
         /// 分类
         /// </summary>
         public string subject { get; set; }
+
+        /// <summary>
+        /// 任务详情
+        /// </summary>
+        public string detail { get; set; }
+
         /// <summary>
         /// 任务描述
         /// </summary>

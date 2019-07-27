@@ -126,7 +126,7 @@ class ViewProjectPhaseTask extends React.Component {
                     id: id,
                     subject: values.subject,
                     description: values.description,
-                    //log: values.log,
+                    detail: values.detail,
                     owner: values.owner,
                     status: taskStatus[0]
                 }
@@ -303,14 +303,20 @@ class ViewProjectPhaseTask extends React.Component {
             width: '8%',
         },
         {
-            title: '任务项',
+            title: '任务项/详情',
             dataIndex: 'description',
-            width: '8%',
+            width: '16%',
+            render: (text, record) => (
+                <div>
+                    <span>{record.description}</span>
+                    <TextArea disabled row={2}>{record.detail}</TextArea>
+                </div>
+              )
         },
         {
           title: '状态记录',
           dataIndex: 'log',
-          width: '15%',
+          width: '8%',
         },
         {
           title: '负责人',
@@ -458,7 +464,25 @@ class ViewProjectPhaseTask extends React.Component {
                                 ],
                                 //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
                                 //,
-                            })(<Input></Input>)}
+                            })(<Input></Input>)}                    
+                        </Form.Item>
+                        <Form.Item
+                            label={
+                                <span>
+                                    任务详情&nbsp;
+                            </span>
+                            }
+                        >
+                        {getFieldDecorator('detail', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请填写任务详情',
+                                    },
+                                ],
+                                //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
+                                //,
+                            })(<TextArea rows={2} />)}
                             
                         </Form.Item>
                         <Form.Item label="负责人">
