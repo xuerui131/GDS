@@ -88,15 +88,15 @@ class Step1Form extends React.Component {
                 }
                 let projectTemplates = [];
                 
-                //加入固定模板
-                projectTemplates.push({
-                    id: Constants.FixedTemplateId,
-                    type: "其他",
-                    name: "AMD项目模板",
-                    desc: "AMD项目模板",
-                    createdAt: '',
-                    createdBy: ''
-                });
+                // //加入固定模板
+                // projectTemplates.push({
+                //     id: Constants.FixedTemplateId,
+                //     type: "其他",
+                //     name: "ADM项目模板",
+                //     desc: "ADM项目模板",
+                //     createdAt: '',
+                //     createdBy: ''
+                // });
 
                 res.data.Data.ResultData.forEach(item => {
                     projectTemplates.push({
