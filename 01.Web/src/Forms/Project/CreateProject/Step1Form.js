@@ -7,6 +7,8 @@ import { GetOutMemberInfoListByName } from '../../../api/index';
 
 import { Constants } from '../../../Common/Constants';
 
+import TemplatePhaseItemForm from './TemplatePhaseItem';
+
 const { Option } = Select;
 const { TextArea, Search } = Input;
 
@@ -58,7 +60,11 @@ class Step1Form extends React.Component {
 
         projectId: 0,
 
+        selectedTemplateId: -1,
+        isTemplatePreviewModalVisible: false,
         //projectDetail: {}
+
+        templatePhases: []
     };
 
     componentDidMount() {
@@ -218,6 +224,27 @@ class Step1Form extends React.Component {
         {
             this.props.templateChangeHandler(e);
         }
+
+        this.setState({
+            selectedTemplateId: e
+        }, ()=>{
+            this.getProjectPhases();
+        })
+    }
+
+    getProjectPhases()
+    {
+        axios.get(`${Constants.APIBaseUrl}/TemplatePhase/GetTemplatePhaseList?templateId=${this.state.selectedTemplateId}`, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => {
+                this.setState({
+                    templatePhases: res.data.Data.ResultData
+                });
+            })
+            .catch(function (error) {
+                console.log("get template list failed", error);
+            });
     }
 
     render() {
@@ -323,6 +350,17 @@ class Step1Form extends React.Component {
         //let businessOptions = this.state.business.map(p => <Option key={p.key} value={p.name}>{p.name}</Option>);
         
         let departmentOptions = this.state.department.map(p => <Option key={p.key} value={p.key}>{p.name}</Option>);
+
+        let orderNo = 1;
+        let phases = this.state.templatePhases.map(phase => {
+            return (
+                <div style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                    阶段{orderNo++}
+                    <TemplatePhaseItemForm data={phase} ></TemplatePhaseItemForm>
+                </div>
+            )
+        });
+
         return (
             <div style={{ overflow: "auto", height: `${height}px` }}>
                 <Row>
@@ -340,6 +378,15 @@ class Step1Form extends React.Component {
                             })(<Select style={{ width: '200px' }} onChange={this.onTemplateChangeHandler.bind(this)}>
                                 {projectTemplateOptions}
                             </Select>)}
+
+                            {
+                                this.state.selectedTemplateId !== -1 ?
+                                <Button type="link" onClick={()=>{
+                                    this.setState({
+                                        isTemplatePreviewModalVisible: true
+                                    })
+                                }}>预览</Button> : null
+                            }
                         </Form.Item>
                     </Col>
                 </Row>
@@ -863,6 +910,19 @@ class Step1Form extends React.Component {
                         columns={externalPeopleColumns} dataSource={this.state.externalPersonData}
                         rowSelection={rowSelectionExternalPersons}
                     />
+                </Modal>
+                <Modal
+                    title="阶段预览"
+                    visible={this.state.isTemplatePreviewModalVisible}
+                    closable={false}
+                    width="80%"
+                    footer = {[
+                        <Button type="primary" key="back" onClick={ () => {this.setState({ isTemplatePreviewModalVisible: false })} }>
+                        关闭
+                        </Button>
+                    ]}
+                >
+                    {phases}
                 </Modal>
             </div>
         );
