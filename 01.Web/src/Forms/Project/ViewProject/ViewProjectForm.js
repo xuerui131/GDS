@@ -150,7 +150,7 @@ export default class ViewProjectForm extends React.Component {
         // ));
 
         let depts = this.state.depts.map(dept => {
-            return <Option value={dept.Id}>{dept.Name}</Option>
+            return <Option key={dept.Id} value={dept.Id}>{dept.Name}</Option>
         });
         return (
                 <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{ marginRight: "50px" }}>

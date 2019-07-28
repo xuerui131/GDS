@@ -357,7 +357,11 @@ class ViewProjectPhaseItem extends React.Component {
     }
 
     completePhase(){
-        console.log(this.state.docListObj);
+        if(!window.confirm("确定完成阶段?"))
+        {
+            return;
+        }
+
         if(this.state.docListObj && Array.isArray(this.state.docListObj))
         {
             if(this.state.docListObj.filter(doc => {
@@ -632,17 +636,7 @@ class ViewProjectPhaseItem extends React.Component {
                     <div>
                         {this.props.data[this.statusField] == 1?  
                         <div>
-                            <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{left:'75%'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> 
-                            <Button loading={this.state.isSaving} style={{left:'75%', marginLeft:'5px'}} type="primary" 
-                            onClick={
-                                ()=>{
-                                    this.setState({
-                                        isTaskModalVisible: true,
-                                        selectedPhase: this.props.data
-                                    })
-                                }}
-                            >任务管理</Button> 
-                            <Button loading={this.state.isSaving} style={{left:'75%', marginLeft:'5px'}} type="primary" 
+                            <Button loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" 
                             onClick={
                                 ()=>{
                                     this.setState({
@@ -651,12 +645,34 @@ class ViewProjectPhaseItem extends React.Component {
                                     })
                                 }}
                             >风险管理</Button> 
+
+                            <Button loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" 
+                            onClick={
+                                ()=>{
+                                    this.setState({
+                                        isTaskModalVisible: true,
+                                        selectedPhase: this.props.data
+                                    })
+                                }}
+                            >任务管理</Button> 
+
+                            <Button disabled={!this.canCompletePhase()} loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" onClick={this.completePhase.bind(this)}>完成阶段</Button> 
                         </div>
                         : null}
                         {this.props.data[this.statusField] == 2?  
                         <div>
                             <span style={{display:'block', textAlign:'right', color:'green', fontWeight:'bold'}}>已完成</span>
-                            <Button loading={this.state.isSaving} style={{left:'80%', marginLeft:'5px'}} type="primary" 
+                            <Button loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" 
+                            onClick={
+                                ()=>{
+                                    this.setState({
+                                        isRiskModalVisible: true,
+                                        selectedPhase: this.props.data
+                                    })
+                                }}
+                            >风险管理</Button> 
+
+                            <Button loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" 
                             onClick={
                                 ()=>{
                                     this.setState({

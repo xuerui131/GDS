@@ -199,6 +199,7 @@ class ViewProjectPhaseRisk extends React.Component {
         let editRisk = risks.filter(t => t.id === this.state.editRecord.id)[0];
 
         editRisk.nextSteps = this.state.editRecord.nextSteps;
+        editRisk.targetDate = this.state.editRecord.targetDate;
         editRisk.status = this.state.editRecord.status;
         editRisk.workaround = this.state.editRecord.workaround;
 
@@ -245,6 +246,7 @@ class ViewProjectPhaseRisk extends React.Component {
             {
                 riskType: '',
                 severity: '',
+                detail: '',
                 assignedTo: ''
             })
     }
@@ -294,7 +296,7 @@ class ViewProjectPhaseRisk extends React.Component {
                 notification.open({
                     message: '删除失败',
                     description:
-                        '删除任务失败',
+                        '删除风险失败',
                     onClick: () => {
                         //console.log('Notification Clicked!');
                     },
@@ -387,7 +389,6 @@ class ViewProjectPhaseRisk extends React.Component {
 
     render(){
         const { getFieldDecorator } = this.props.form;
-
         return(
             <div>
                 <div style={{textAlign:"center"}}>
@@ -403,7 +404,7 @@ class ViewProjectPhaseRisk extends React.Component {
                         this.setState({
                             isAddRiskModalVisible: true
                         })
-                    }} type="primary">添加任务</Button> : null}
+                    }} type="primary">添加风险</Button> : null}
                 </div>
                 <Modal
                     title="添加风险"
@@ -422,7 +423,7 @@ class ViewProjectPhaseRisk extends React.Component {
                         <Form.Item
                             label={
                                 <span>
-                                    分类&nbsp;
+                                    类别&nbsp;
                             </span>
                             }
                         >
@@ -438,7 +439,7 @@ class ViewProjectPhaseRisk extends React.Component {
                             })(
                                     <Select>
                                         {
-                                            this.state.riskType.map( s=>
+                                            this.state.riskTypes.map( s=>
                                                 <Option value={s}>{s}</Option>
                                             )
                                         }
@@ -452,15 +453,13 @@ class ViewProjectPhaseRisk extends React.Component {
                             </span>
                             }
                         >
-                        {getFieldDecorator('description', {
+                        {getFieldDecorator('severity', {
                                 rules: [
                                     {
                                         required: true,
                                         message: '请选择严重性',
                                     },
                                 ],
-                                //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
-                                //,
                             })( <Select>
                                         {
                                             this.state.severities.map( s=>
@@ -483,8 +482,6 @@ class ViewProjectPhaseRisk extends React.Component {
                                         message: '请填写风险描述',
                                     },
                                 ],
-                                //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
-                                //,
                             })(<Input />)}
                             
                         </Form.Item>
@@ -552,6 +549,21 @@ class ViewProjectPhaseRisk extends React.Component {
                                 editRecord: record
                             })
                         } }></DatePicker>
+                        </Form.Item>
+                        <Form.Item
+                            label={
+                                <span>
+                                    状态&nbsp;
+                            </span>
+                            }
+                        >
+                        <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
+                            let record = this.state.editRecord;
+                            record.status = e.target.value
+                             this.setState({
+                                editRecord: record
+                            })
+                        } }></Input>
                         </Form.Item>
                         <Form.Item
                             label={

@@ -372,6 +372,7 @@ namespace GDS.WebApi.Controllers
                     targetRisk.assignedTo = request.risk.assignedTo;
                     targetRisk.targetDate = request.risk.targetDate;
                     targetRisk.status = request.risk.status;
+                    targetRisk.workaround = request.risk.workaround;
                 }
             }
             else
