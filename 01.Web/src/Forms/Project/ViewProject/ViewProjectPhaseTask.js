@@ -126,7 +126,7 @@ class ViewProjectPhaseTask extends React.Component {
                     id: id,
                     subject: values.subject,
                     description: values.description,
-                    detail: values.detail,
+                    //detail: values.detail,
                     owner: values.owner,
                     status: taskStatus[0]
                 }
@@ -303,13 +303,12 @@ class ViewProjectPhaseTask extends React.Component {
             width: '8%',
         },
         {
-            title: '任务项/详情',
+            title: '任务项',
             dataIndex: 'description',
             width: '16%',
             render: (text, record) => (
                 <div>
-                    <span>{record.description}</span>
-                    <TextArea disabled row={2}>{record.detail}</TextArea>
+                    <TextArea readOnly row={2}>{record.description}</TextArea>
                 </div>
               )
         },
@@ -465,9 +464,9 @@ class ViewProjectPhaseTask extends React.Component {
                                 ],
                                 //initialValue: this.props.data && this.props.data["description"] ? this.props.data["description"] : null
                                 //,
-                            })(<Input></Input>)}                    
+                            })(<TextArea rows={2} />)}                    
                         </Form.Item>
-                        <Form.Item
+                        {/* <Form.Item
                             label={
                                 <span>
                                     任务详情&nbsp;
@@ -485,7 +484,7 @@ class ViewProjectPhaseTask extends React.Component {
                                 //,
                             })(<TextArea rows={2} />)}
                             
-                        </Form.Item>
+                        </Form.Item> */}
                         <Form.Item label="负责人">
                         {getFieldDecorator('owner', {
                                 rules: [
@@ -590,13 +589,26 @@ class ViewProjectPhaseTask extends React.Component {
                             </span>
                             }
                         >
-                        <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
+                        {/* <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
                             let record = this.state.editRecord;
                             record.status = e.target.value
                              this.setState({
                                 editRecord: record
                             })
-                        } }></Input>
+                        } }></Input> */}
+                        <Select defaultValue={this.state.editRecord.status} onChange={(newStatus)=>{
+                            let record = this.state.editRecord;
+                            record.status = newStatus;
+                             this.setState({
+                                editRecord: record
+                            })
+                        }}>
+                            {
+                                taskStatus.map(ts => 
+                                    <Option value={ts}>{ts}</Option>
+                                )
+                            }
+                        </Select>
                         </Form.Item>
                         <Form.Item
                             label={

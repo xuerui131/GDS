@@ -11,11 +11,9 @@ import axios from 'axios';
 const { Option } = Select;
 
 const taskStatus = [
-    '未开始',
-    '进行中',
-    '已完成',
-    '已取消',
-    '搁置'
+    'Not Start',
+    'In Process',
+    'Closed'
 ]
    
 const { TextArea, Search } = Input;
@@ -324,14 +322,14 @@ class ViewProjectPhaseRisk extends React.Component {
             width: '8%',
         },
         {
-          title: '问题//风险描述',
+          title: '问题/风险描述',
           dataIndex: 'detail',
-          width: '8%',
+          width: '15%',
         },
         {
             title: '后续工作计划',
             dataIndex: 'nextSteps',
-            width: '6%',
+            width: '10%',
           },
         {
           title: '负责人',
@@ -557,13 +555,26 @@ class ViewProjectPhaseRisk extends React.Component {
                             </span>
                             }
                         >
-                        <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
+                        {/* <Input defaultValue={this.state.editRecord.status} onChange={ (e)=>{
                             let record = this.state.editRecord;
                             record.status = e.target.value
                              this.setState({
                                 editRecord: record
                             })
-                        } }></Input>
+                        } }></Input> */}
+                        <Select defaultValue={this.state.editRecord.status} onChange={(newStatus)=>{
+                            let record = this.state.editRecord;
+                            record.status = newStatus;
+                             this.setState({
+                                editRecord: record
+                            })
+                        }}>
+                            {
+                                taskStatus.map(ts => 
+                                    <Option value={ts}>{ts}</Option>
+                                )
+                            }
+                        </Select>
                         </Form.Item>
                         <Form.Item
                             label={
