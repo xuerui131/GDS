@@ -210,7 +210,9 @@ class ViewProject extends React.Component {
                         });
 
 
-                    axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.InProgress}&currentPhase=${newProjectPhases[index + 1].Name}`, {
+                    let currentPhaseName = encodeURI(newProjectPhases[index + 1].Name);
+                    
+                    axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.InProgress}&currentPhase=${currentPhaseName}`, {
                         headers: { 'Content-Type': 'application/json' }
                     })
                         .then(res => {
