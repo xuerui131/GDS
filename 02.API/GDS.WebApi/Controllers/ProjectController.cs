@@ -51,11 +51,11 @@ namespace GDS.WebApi.Controllers
 
                 if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
                 {
-                    sqlCondition.Append($" and (createby = '{loginName}' or projectmanager = '{loginName}' or charindex(';{loginName};', ';' + TeamMembers + ';') > 0) ");
+                    sqlCondition.Append($" and (createby = '{loginName}' or charindex('{loginName}', projectmanager) >  0 or charindex('{loginName}', TeamMembers) > 0) ");
                 }
                 else if(userType == GDS.Entity.Constant.ConstantDefine.User) //
                 {
-                    sqlCondition.Append($"and charindex(';{loginName};', ';' + TeamMembers + ';') > 0");
+                    sqlCondition.Append($"and charindex('{loginName}', TeamMembers) > 0");
                 }
 
                 if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId!="0")
@@ -157,14 +157,23 @@ namespace GDS.WebApi.Controllers
                     }
                 }
 
+                //if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
+                //{
+                //    sqlCondition.Append($" and (createby = '{loginName}' or projectmanager = '{loginName}' or charindex(';{loginName};', ';' + TeamMembers + ';') > 0) ");
+                //}
+                //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
+                //{
+                //    sqlCondition.Append($"and charindex(';{loginName};', ';' + TeamMembers + ';') > 0");
+                //}
                 if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
                 {
-                    sqlCondition.Append($" and (createby = '{loginName}' or projectmanager = '{loginName}' or charindex(';{loginName};', ';' + TeamMembers + ';') > 0) ");
+                    sqlCondition.Append($" and (createby = '{loginName}' or charindex('{loginName}', projectmanager) >  0 or charindex('{loginName}', TeamMembers) > 0) ");
                 }
-                else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
-                {
-                    sqlCondition.Append($"and charindex(';{loginName};', ';' + TeamMembers + ';') > 0");
-                }
+                //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
+                //{
+                //    sqlCondition.Append($"and charindex(';{loginName};', TeamMembers) > 0");
+                //}
+
                 if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
                 {
                     sqlCondition.Append($" and BusinessDept = {query.DepartId}");

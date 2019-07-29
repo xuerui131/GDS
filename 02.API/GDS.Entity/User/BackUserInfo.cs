@@ -9,8 +9,14 @@ namespace GDS.Entity
     [Serializable]
     public class BackUserInfo : ModelBase
     {
+        /// <summary>
+        /// 对应数据库中的UserName，账号
+        /// </summary>
         public string LoginName { get; set; }
       
+        /// <summary>
+        /// 显示名（中文名）
+        /// </summary>
         public string Name { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }

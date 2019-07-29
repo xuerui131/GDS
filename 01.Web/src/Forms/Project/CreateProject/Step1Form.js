@@ -19,8 +19,8 @@ const peopleColumns = [
         render: text => <a href="javascript:;">{text}</a>,
     },
     {
-        title: '部门',
-        dataIndex: 'dept',
+        title: '账号',
+        dataIndex: 'loginName',
     }
 ];
 
@@ -154,12 +154,12 @@ class Step1Form extends React.Component {
             }
             let business = [],tempData=[];
             res.data.Data.map(item => {
-                business.push(item.Name);
+                business.push(item.Name + '(' + item.UserName + ')');
                 tempData.push({
                     key:item.Id,
                     name:item.Name,
-                    value: item.Name,
-                    dept:item.StaffNo
+                    value: item.UserName,
+                    loginName:item.UserName
                 })
             })
             this.setState({
@@ -179,7 +179,7 @@ class Step1Form extends React.Component {
           
             let pms=[];
             res.data.Data.map(item => {
-                pms.push(item.Name)
+                pms.push(item.Name + '(' + item.UserName + ')')
             })
             this.setState({
                 pmData:pms
@@ -730,7 +730,7 @@ class Step1Form extends React.Component {
                                                 let personsStr = '';
 
                                                 if (this.state.selectedPersons && Array.isArray(this.state.selectedPersons)) {
-                                                    personsStr = this.state.selectedPersons.map(person => person.name).join(';');
+                                                    personsStr = this.state.selectedPersons.map(person => person.name + '(' + person.loginName + ')').join(';');
                                                 }
 
                                                 that.props.form.setFieldsValue(

@@ -121,6 +121,7 @@
     <Compile Include="Utility\HZConverterPinYin.cs" />
     <Compile Include="Utility\JsonHelper.cs" />
     <Compile Include="Utility\MD5.cs" />
+    <Compile Include="Utility\MenuComparer.cs" />
     <Compile Include="Utility\MessageHelper.cs" />
     <Compile Include="Utility\MobileHelper.cs" />
     <Compile Include="Utility\ParamHelper.cs" />
