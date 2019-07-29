@@ -334,10 +334,10 @@ namespace GDS.WebApi.Controllers
         public ActionResult UpdateStatus(int Id, int Status, string currentPhase)
         {
             var entity = new ProjectBLL().GetDataById(Id);
-            if (entity != null && entity.Status == Status)
-            {
-                return Json(new ResponseEntity<object>(0, "不能重复设置项目状态", ""), JsonRequestBehavior.AllowGet);
-            }
+            //if (entity != null && entity.Status == Status)
+            //{
+            //    return Json(new ResponseEntity<object>(0, "不能重复设置项目状态", ""), JsonRequestBehavior.AllowGet);
+            //}
 
             var result = new ProjectBLL().UpdateStatus(Id, Status);
             if (!string.IsNullOrEmpty(currentPhase))

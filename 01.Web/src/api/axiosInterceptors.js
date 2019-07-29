@@ -31,3 +31,4 @@ axios.interceptors.response.use(
 });
 // 取本地token 应对刷新
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('token') || '';
+axios.defaults.headers.common['Content-type'] = 'text/html;charset=utf-8';
