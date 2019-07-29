@@ -1,0 +1,13 @@
+﻿IE 11 兼容问题：
+
+https://github.com/facebook/create-react-app/issues/6924
+
+1. Setup the create-react-app project as normal.
+2. Edit the index.js file and add the following lines at the VERY TOP of the file.
+import 'react-app-polyfill/ie11';import 'react-app-polyfill/stable';
+3. Edit the Package.json file and add "ie 11" to both the production and development sections of the browserslist
+
+ "browserslist": {    "production": [      ">0.2%",      "not dead",      "not op_mini all",      "ie 11"    ],    "development": [      "last 1 chrome version",      "last 1 firefox version",      "last 1 safari version",      "ie 11"    ]  } 
+
+4. delete your entire node_modules folder
+5. run npm install to re-install the node_modules

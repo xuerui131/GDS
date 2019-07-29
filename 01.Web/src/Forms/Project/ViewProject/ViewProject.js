@@ -190,6 +190,7 @@ class ViewProject extends React.Component {
                 let date = new Date();
                 let dateStr = date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-' + ("0" + date.getDate()).slice(-2); //date.getDate();
 
+                debugger
                 newProjectPhases[index].Status = 2;
                 newProjectPhases[index].EndTimeStr = dateStr;
 

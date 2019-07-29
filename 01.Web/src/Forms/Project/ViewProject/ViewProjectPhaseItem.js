@@ -95,7 +95,7 @@ class DocUpload extends React.Component {
         multiple: false,
       };
 
-      if(this.props.status == 0) //未开始
+      if(!this.props.status) //未开始
       {
         return (
             <span>上传文件</span>
@@ -635,7 +635,7 @@ class ViewProjectPhaseItem extends React.Component {
                 <Form {...formItemLayout} style={{ marginRight: "20px" }}>
                     <div>
                         {this.props.data[this.statusField] == 1?  
-                        <div>
+                        <div style={{float: "right"}}>
                             <Button loading={this.state.isSaving} style={{zIndex:'999', float:'right', marginLeft:'5px'}} type="primary" 
                             onClick={
                                 ()=>{
@@ -683,6 +683,7 @@ class ViewProjectPhaseItem extends React.Component {
                             >任务管理</Button> 
                         </div> : null}
                     </div>
+                    <div style={{clear:'both'}}></div>
                     <Form.Item label="项目阶段名称">
                        <span>{this.props.data[this.fieldName]}</span>
                     </Form.Item>

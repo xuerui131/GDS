@@ -1,4 +1,5 @@
 ﻿using GDS.BLL;
+using GDS.Comon.Utility;
 using GDS.Entity;
 using GDS.Entity.Constant;
 using GDS.Entity.Result;
@@ -131,6 +132,9 @@ namespace GDS.WebApi.Controllers
             List<View_BackMenu> ListMenu = new List<View_BackMenu>();
 
             ListMenu = new BackMenuBLL().GetView_BackMenuByUId(CurrenUserInfo.Id);
+
+            //User可能有多个Role，会有重复的Menu，因此按MenuId取Distinct
+            ListMenu = ListMenu.Distinct(new MenuComparer()).ToList();
 
             List<View_DispalyBackMenu> MyMenu = new List<View_DispalyBackMenu>();
             HashSet<int> hs = new HashSet<int>();
