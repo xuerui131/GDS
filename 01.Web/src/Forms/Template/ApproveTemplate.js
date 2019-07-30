@@ -74,9 +74,9 @@ class ApproveTemplate extends React.Component {
 
     onApprove()
     {
-        let projectId = 0;
-        if (this.props.match && this.props.match.params && this.props.match.params.projId) {
-            projectId = parseInt(this.props.match.params.projId);
+        let templateId = 0;
+        if (this.props.match && this.props.match.params && this.props.match.params.templateId) {
+            templateId = parseInt(this.props.match.params.templateId);
         }
 
         this.setState(
@@ -84,8 +84,8 @@ class ApproveTemplate extends React.Component {
                 isLoading: true
             }
         )
-
-        axios.get(`${Constants.APIBaseUrl}/Template/UpdateStatus?Id=${projectId}&Status=1`, {
+        debugger
+        axios.get(`${Constants.APIBaseUrl}/Template/UpdateStatus?Id=${templateId}&Status=1`, {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(res => {

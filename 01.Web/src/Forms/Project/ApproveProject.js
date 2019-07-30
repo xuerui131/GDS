@@ -123,7 +123,6 @@ class ApproveProject extends React.Component {
                 isLoading: true
             }
         )
-
         axios.get(`${Constants.APIBaseUrl}/Project/UpdateApprovalStatus?Id=${projectId}&Status=1`, {
             headers: { 'Content-Type': 'application/json' }
         })

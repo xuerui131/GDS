@@ -6,6 +6,8 @@ import axios from 'axios';
 
 import { Constants } from '../../../Common/Constants';
 
+import { ReadOnlyProjectAMDPhase1, ReadOnlyProjectAMDPhase2, ReadOnlyProjectAMDPhase3, ReadOnlyProjectAMDPhase4, ReadOnlyProjectAMDPhase5 } from './ADMPhases';
+
 const { Option } = Select;
 const { TextArea, Search } = Input;
 
@@ -34,6 +36,8 @@ class Step1FormAMD extends React.Component {
         peopleData:[],
 
         projectId: 0,
+
+        isTemplatePreviewModalVisible: false,
     };
 
     componentDidMount() {
@@ -232,6 +236,12 @@ class Step1FormAMD extends React.Component {
                             })(<Select style={{ width: '200px' }} onChange={this.onTemplateChangeHandler.bind(this)}>
                                 {projectTemplateOptions}
                             </Select>)}
+
+                            <Button type="link" onClick={()=>{
+                                    this.setState({
+                                        isTemplatePreviewModalVisible: true
+                                    })
+                                }}>预览</Button>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -453,6 +463,46 @@ class Step1FormAMD extends React.Component {
                         columns={projectMemberColumns} dataSource={this.state.peopleData}
                         rowSelection={rowSelection}
                     />
+                </Modal>
+                <Modal
+                    title="阶段预览"
+                    visible={this.state.isTemplatePreviewModalVisible}
+                    closable={false}
+                    width="80%"
+                    footer = {[
+                        <Button type="primary" key="back" onClick={ () => {this.setState({ isTemplatePreviewModalVisible: false })} }>
+                        关闭
+                        </Button>
+                    ]}
+                >
+                    <div>
+                        <div key={1} style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                            <div id='phase1'>阶段1
+                            </div>
+                            <ReadOnlyProjectAMDPhase1></ReadOnlyProjectAMDPhase1>
+                        </div>
+                        <div key={2} style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                            <div id='phase2'>阶段2
+                                </div>
+                                <ReadOnlyProjectAMDPhase2></ReadOnlyProjectAMDPhase2>
+                            </div>
+                        <div key={3} style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                            <div id='phase3'>阶段3
+                            </div>
+                            <ReadOnlyProjectAMDPhase3></ReadOnlyProjectAMDPhase3>
+                        </div>
+                        <div key={4} style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                            <div id='phase4'>阶段4
+                            </div>
+                            <ReadOnlyProjectAMDPhase4></ReadOnlyProjectAMDPhase4>
+                        </div>
+                        <div key={5} style={{ borderWidth: "1px", borderStyle: "solid", padding: "10px", margin: "10px" }}>
+                            <div id='phase5'>阶段5
+                            </div>
+                            <ReadOnlyProjectAMDPhase5></ReadOnlyProjectAMDPhase5>
+                        </div>
+                    
+                    </div>
                 </Modal>
             </div>
         );
