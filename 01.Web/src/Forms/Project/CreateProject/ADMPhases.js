@@ -59,7 +59,7 @@ export class ReadOnlyProjectAMDPhase2 extends React.Component {
                         <DatePicker disabled></DatePicker>
                     </Form.Item>
                     <Form.Item label="采购文件">
-                        <span></span>
+                        <span>上传</span>
                     </Form.Item>
             </Form>          
         );
@@ -108,8 +108,6 @@ export class ReadOnlyProjectAMDPhase4 extends React.Component {
 
 export class ReadOnlyProjectAMDPhase5 extends React.Component {
     render() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
             <Form {...formItemLayout}>
                 <Form.Item label="项目阶段名称">

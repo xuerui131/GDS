@@ -16,6 +16,9 @@ namespace GDS.Entity
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        /// <summary>
+        /// 项目编号
+        /// </summary>
         public string No { get; set; }
         public string Description { get; set; }
         public Nullable<int> ProjectType { get; set; }
@@ -117,5 +120,7 @@ namespace GDS.Entity
         public DateTime? PlanCheckAt { get; set; }
 
         public string PlanCheckAtStr { get; set; }
+
+        public string ADM { get; set; }
     }
 }

@@ -9,21 +9,6 @@ import { Router, Route, Switch, Link } from 'react-router-dom';
 const { Option } = Select;
 
 class TemplateList extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            type: '',
-            name: '',
-            createBy: '',
-            dataSource:[              
-              ],
-            projectTypeList: [],
-            isSearching: false,
-            loading: false
-        };
-    }
-
     columns = [
         {
           title: '序号',
@@ -31,8 +16,8 @@ class TemplateList extends React.Component {
           width: '10%',
         },
         {
-          title: '类别',
-          dataIndex: 'type',
+          title: '部门',
+          dataIndex: 'dept',
           width: '15%',
         },
         {
@@ -73,6 +58,52 @@ class TemplateList extends React.Component {
         }
       ];
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            type: '',
+            name: '',
+            createBy: '',
+            dataSource:[              
+              ],
+            //projectTypeList: [],
+            isSearching: false,
+            loading: false,
+
+            department:[],
+            deptId: ''
+        };
+    }
+
+    componentDidMount() {
+        // this.getProjectTypes();
+ 
+         this.getDepartmentList();
+         this.onSearch();
+     }
+
+      getDepartmentList(){
+        axios.get(`${Constants.APIBaseUrl}/Department/GetAllDepartment`, {
+            headers: { 'Content-Type': 'application/json' }
+        }).then(res => {
+            if (!res || !res.data || !res.data.Data) {
+                return;
+            }
+            let department = [];
+            res.data.Data.forEach(item => {
+                department.push({
+                    key: item.Id,
+                    name: item.Name,
+                });
+            })
+
+            this.setState({
+                department
+            });
+        })
+    }
+
     onNameChange = (e)=>
     {
         this.setState({
@@ -87,10 +118,10 @@ class TemplateList extends React.Component {
         })
     }
 
-    onTypeChange = (typeId)=>
+    onDeptChange = (deptId)=>
     {
         this.setState({
-            type:typeId
+            deptId
         })
     }
 
@@ -99,7 +130,9 @@ class TemplateList extends React.Component {
             isSearching: true
         })
         this.setState({ loading: true });
-        axios.get(`${Constants.APIBaseUrl}/Template/GetTemplateList?ProjectType=${this.state.type}&Name=${this.state.name}&CreateBy=${this.state.createBy}`, {
+
+        let that = this;
+        axios.get(`${Constants.APIBaseUrl}/Template/GetTemplateList?DepartId=${this.state.deptId}&Name=${this.state.name}&CreateBy=${this.state.createBy}`, {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(res => {
@@ -109,7 +142,7 @@ class TemplateList extends React.Component {
                 res.data.Data.ResultData.map(item => {
                     ds.push({
                         id: item.Id,
-                        type: this.getProjectTypeStr(item.ProjectType), //item.ProjectType===1? "IT" :"其他",
+                        dept: item.DepartmentName, //this.getProjectTypeStr(item.ProjectType), //item.ProjectType===1? "IT" :"其他",
                         name: item.Name,
                         desc: item.Description,
                         createdAt: item.CreateTimeStr,
@@ -127,47 +160,43 @@ class TemplateList extends React.Component {
                 console.log(error);
                 console.log("search fail");
 
-                this.setState({
+                that.setState({
                     isSearching: false
                 })
             });
     }
 
-    getProjectTypeStr(projectTypeId)
-    {
-        if(this.state.projectTypeList && Array.isArray(this.state.projectTypeList))
-        {
-            let projectType = this.state.projectTypeList.filter(pt => pt.Id == projectTypeId);
+    // getProjectTypeStr(projectTypeId)
+    // {
+    //     if(this.state.projectTypeList && Array.isArray(this.state.projectTypeList))
+    //     {
+    //         let projectType = this.state.projectTypeList.filter(pt => pt.Id == projectTypeId);
 
-            if(projectType && projectType.length > 0)
-            {
-                return projectType[0].Name;
-            }
-        }
+    //         if(projectType && projectType.length > 0)
+    //         {
+    //             return projectType[0].Name;
+    //         }
+    //     }
 
-        return '';
-    }
+    //     return '';
+    // }   
 
-    componentDidMount() {
-        this.getProjectTypes();
-    }
+    // getProjectTypes()
+    // {
+    //     axios.get(`${Constants.APIBaseUrl}/ProjectType/GetProjectTypeList`, {
+    //         headers: { 'Content-Type': 'application/json' }
+    //       })
+    //         .then(res => {
+    //             this.setState({
+    //                 projectTypeList: res.data.Data.ResultData
+    //             })
 
-    getProjectTypes()
-    {
-        axios.get(`${Constants.APIBaseUrl}/ProjectType/GetProjectTypeList`, {
-            headers: { 'Content-Type': 'application/json' }
-          })
-            .then(res => {
-                this.setState({
-                    projectTypeList: res.data.Data.ResultData
-                })
-
-                this.onSearch();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    //             this.onSearch();
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //         });
+    // }
 
     onDelete = (id) => {
         let that =this;
@@ -196,16 +225,18 @@ class TemplateList extends React.Component {
     }
 
     render() {
-        let projectTypes = this.state.projectTypeList.map(pt => (
-            <Option value={pt.Id}>{pt.Name}</Option>
-        ));
+        // let projectTypes = this.state.projectTypeList.map(pt => (
+        //     <Option value={pt.Id}>{pt.Name}</Option>
+        // ));
+
+        let departmentOptions = this.state.department.map(p => <Option key={p.key} value={p.key}>{p.name}</Option>);
 
         return <Row gutter={16} style={{ marginTop: '16px' }}>
             <Col span={24}>
                 <Row gutter={8}>
                     <Col span={6}>
-                        类型：<Select style={{ width: 150 }} defaultValue={this.state.type} onChange={this.onTypeChange.bind(this)} >
-                            {projectTypes}
+                        部门：<Select style={{ width: 150 }} defaultValue={this.state.deptId} onChange={this.onDeptChange.bind(this)} >
+                            {departmentOptions}
                         </Select>
                     </Col>
                     <Col span={6}>

@@ -60,13 +60,13 @@ class CreateTemplate extends React.Component {
         }
 
         //第三步，提交数据库
-        if(this.state.current == 2)
+        if(this.state.current === 2)
         {
             let body = {
                 id:0,
                 Name:this.state.step1Content.name,
                 Description: this.state.step1Content.comment,
-                ProjectType: this.state.step1Content.type
+                DepartmentId: this.state.step1Content.deptId
             };
     
             let that = this;

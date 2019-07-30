@@ -121,7 +121,8 @@ class ViewProject extends React.Component {
             isStarting: true
         })
 
-        axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.InProgress}&currentPhase=${this.state.projectPhases[0].Name}`, {
+        let currentPhaseName = encodeURI(this.state.projectPhases[0].Name);
+        axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.InProgress}&currentPhase=${currentPhaseName}`, {
             headers: { 'Content-Type': 'application/json' }
         })
             .then(res => {
@@ -213,7 +214,7 @@ class ViewProject extends React.Component {
                     let currentPhaseName = encodeURI(newProjectPhases[index + 1].Name);
                     
                     axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.InProgress}&currentPhase=${currentPhaseName}`, {
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 'Content-Type': 'application/json;charset=utf-8' }
                     })
                         .then(res => {
                             console.log("project phase status update =>", res);
@@ -225,7 +226,8 @@ class ViewProject extends React.Component {
                 }
                 else //当前的Phase已经是最后一个，设置Project的状态为2（已完成）
                 {
-                    axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.Complete}&currentPhase=所有阶段已结束`, {
+                    let currentPhaseName = encodeURI("所有阶段已结束");
+                    axios.get(`${Constants.APIBaseUrl}/Project/UpdateStatus?Id=${this.state.projectDetail.Id}&Status=${Constants.Complete}&currentPhase=${currentPhaseName}`, {
                         headers: { 'Content-Type': 'application/json' }
                     })
                         .then(res => {

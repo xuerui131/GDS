@@ -16,31 +16,8 @@ class ViewProjectFormAMD extends React.Component {
     state={
         department:[]
     }
-    componentDidMount() {
-        //this.getDepartmentList();
+    componentDidMount() {        
     }
-
-    // getDepartmentList(){
-    //     axios.get(`${Constants.APIBaseUrl}/Department/GetAllDepartment`, {
-    //         headers: { 'Content-Type': 'application/json' }
-    //     }).then(res => {
-    //         if (!res || !res.data || !res.data.Data) {
-    //             return;
-    //         }
-    //         let department = [];
-    //         res.data.Data.map(item => {
-    //             department.push({
-    //                 key: item.Id,
-    //                 name: item.Name,
-    //             });
-    //         })
-
-    //         this.setState({
-    //             department
-    //         });
-    //     })
-    // }
-
     render() {
         const formItemLayout = {
             labelCol: {
@@ -134,6 +111,18 @@ class ViewProjectFormAMD extends React.Component {
                     <Col span={12} style={rightFormItemStyle}>
                         <Form.Item label="数据中心">
                             <Input disabled defaultValue={this.props.projectDetail.DataCenter} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12} style={leftFormTopItemStyle}>
+                        <Form.Item label="项目编号">
+                            <Input disabled defaultValue={this.props.projectDetail.No} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12} style={rightFormTopItemStyle}>
+                        <Form.Item label="ADM">
+                            <Input disabled defaultValue={this.props.projectDetail.ADM} />
                         </Form.Item>
                     </Col>
                 </Row>

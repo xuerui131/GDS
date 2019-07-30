@@ -145,6 +145,7 @@ class CreateProjectStep2 extends React.Component {
     {
         let body = {
             id: this.props.data["id"],
+            NO: this.props.data["no"],
             Name: this.props.data["name"],
             ProjectType:this.props.data["projectTypeId"],
             TemplateId: this.props.data["templateId"],
@@ -182,6 +183,7 @@ class CreateProjectStep2 extends React.Component {
             Statement: this.props.data["statement"],     //申明
             ApprovedAt: this.props.data["approvedAt"],   //立项时间
             PlanCheckAt: this.props.data["planCheckAt"], //计划验收时间
+            ADM: this.props.data["adm"],
         };
 
         let that = this;

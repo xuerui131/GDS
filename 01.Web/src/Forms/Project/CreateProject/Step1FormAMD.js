@@ -33,7 +33,8 @@ class Step1FormAMD extends React.Component {
         selectedProjectMembersRowKeys: [], //用来记录人员选择表的选中项，以便清除
 
         projectTemplates: [],
-        peopleData:[],
+        personList:[], //人员下拉框
+        peopleData:[], //人员选择Window
 
         projectId: 0,
 
@@ -70,15 +71,18 @@ class Step1FormAMD extends React.Component {
                 return;
             }
             let tempData=[];
+            let personList = [];
             res.data.Data.map(item => {
+                personList.push(item.Name + '(' + item.UserName + ')');
                 tempData.push({
                     key:item.Id,
                     name:item.Name,
                     value: item.Name,
-                    dept:item.StaffNo
+                    loginName:item.UserName
                 })
             })
             this.setState({
+                personList,
                 peopleData:tempData
             });
         })
@@ -98,8 +102,8 @@ class Step1FormAMD extends React.Component {
                 projectTemplates.push({
                     id: Constants.FixedTemplateId,
                     type: "其他",
-                    name: "AMD项目模板",
-                    desc: "AMD项目模板",
+                    name: "ADM项目模板",
+                    desc: "ADM项目模板",
                     createdAt: '',
                     createdBy: ''
                 });
@@ -276,6 +280,37 @@ class Step1FormAMD extends React.Component {
                     </Col>
                 </Row>
                 <Row>
+                    <Col span={12} style={leftFormTopItemStyle}>
+                        <Form.Item label="项目编号">
+                            {getFieldDecorator('no', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请填写项目编号',
+                                    },
+                                ],
+                                initialValue: this.props.data.no ? this.props.data.no : null
+                            })(<Input />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={12} style={rightFormTopItemStyle}>
+                        <Form.Item label="ADM">
+                            {getFieldDecorator('adm', {
+                                initialValue: this.props.data.adm ? this.props.data.adm : null
+                            })(
+                                <AutoComplete
+                                    dataSource={this.state.personList}
+                                    style={{ width: 200 }}
+                                    placeholder="请选择ADM"
+                                    filterOption={(inputValue, option) =>
+                                        option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                    }
+                                />
+                                )}
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
                     <Col span={12} style={leftFormItemStyle}>
                         <Form.Item label="签约客户名称">
                             {getFieldDecorator('signedCustomer', {
@@ -346,7 +381,7 @@ class Step1FormAMD extends React.Component {
                                                 let personsStr = '';
 
                                                 if (this.state.selectedProjectMembers && Array.isArray(this.state.selectedProjectMembers)) {
-                                                    personsStr = this.state.selectedProjectMembers.map(person => person.name).join(';');
+                                                    personsStr = this.state.selectedProjectMembers.map(person => person.name + '(' + person.loginName + ')').join(';');
                                                 }
 
                                                 that.props.form.setFieldsValue(

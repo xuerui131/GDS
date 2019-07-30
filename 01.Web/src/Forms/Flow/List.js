@@ -154,88 +154,88 @@ class FlowSList extends React.Component {
             });
     }
 
-    getTemplateApprovalList(queryString)
-    {
-        this.setState({ loading: true });
-        axios.get(`${Constants.APIBaseUrl}/Template/GetApprovalList?${queryString}`, {
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(res => {
-                this.setState({ loading: false });
-                let tempTemplateList = [];
+    // getTemplateApprovalList(queryString)
+    // {
+    //     this.setState({ loading: true });
+    //     axios.get(`${Constants.APIBaseUrl}/Template/GetApprovalList?${queryString}`, {
+    //         headers: { 'Content-Type': 'application/json' }
+    //     })
+    //         .then(res => {
+    //             this.setState({ loading: false });
+    //             let tempTemplateList = [];
 
-                console.log(res.data);
-                if (res && res.data && res.data.Data.ResultData) {
-                    res.data.Data.ResultData.map(data => {
-                        let dept = this.state.deptList.filter(dept => dept.Id === data.DepartId);
+    //             console.log(res.data);
+    //             if (res && res.data && res.data.Data.ResultData) {
+    //                 res.data.Data.ResultData.map(data => {
+    //                     let dept = this.state.deptList.filter(dept => dept.Id === data.DepartId);
 
-                        tempTemplateList.push({
-                            id: data.Id,
-                            itemType: '模板',
-                            dept: (dept && dept.length > 0) ? dept[0].Name : '',
-                            name: data.Name,
-                            comment: data.Description,
-                            createdAt: data.CreateTimeStr,
-                            createBy: data.CreateBy,
-                            status: Constants.getProjectStatusStr(data.Status)
-                        })
-                    })
-                }
+    //                     tempTemplateList.push({
+    //                         id: data.Id,
+    //                         itemType: '模板',
+    //                         dept: (dept && dept.length > 0) ? dept[0].Name : '',
+    //                         name: data.Name,
+    //                         comment: data.Description,
+    //                         createdAt: data.CreateTimeStr,
+    //                         createBy: data.CreateBy,
+    //                         status: Constants.getProjectStatusStr(data.Status)
+    //                     })
+    //                 })
+    //             }
 
-                this.setState({
-                    approvalList: tempTemplateList //res.data.Data.ResultData
-                }, ()=>{
-                    this.getProjectApprovalList(queryString);
-                });
-            })
-            .catch(function (error) {
-                console.log(error);
-                this.setState({
-                    isSearching: false
-                });
-            });
-    }
+    //             this.setState({
+    //                 approvalList: tempTemplateList //res.data.Data.ResultData
+    //             }, ()=>{
+    //                 this.getProjectApprovalList(queryString);
+    //             });
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //             this.setState({
+    //                 isSearching: false
+    //             });
+    //         });
+    // }
 
-    getProjectApprovalList(queryString)
-    {
-        this.setState({ loading: true });
-        axios.get(`${Constants.APIBaseUrl}/Project/GetApprovalList?${queryString}`, {
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(res => {
-                this.setState({ loading: false });
-                let tempProjectList = this.state.approvalList;
+    // getProjectApprovalList(queryString)
+    // {
+    //     this.setState({ loading: true });
+    //     axios.get(`${Constants.APIBaseUrl}/Project/GetApprovalList?${queryString}`, {
+    //         headers: { 'Content-Type': 'application/json' }
+    //     })
+    //         .then(res => {
+    //             this.setState({ loading: false });
+    //             let tempProjectList = this.state.approvalList;
 
-                if (res && res.data && res.data.Data && res.data.Data.ResultData) {
-                    res.data.Data.ResultData.map(data => {
-                        let dept = this.state.deptList.filter(dept => dept.Id === data.BusinessDept);
+    //             if (res && res.data && res.data.Data && res.data.Data.ResultData) {
+    //                 res.data.Data.ResultData.map(data => {
+    //                     let dept = this.state.deptList.filter(dept => dept.Id === data.BusinessDept);
 
-                        tempProjectList.push({
-                            id: data.Id,
-                            itemType: '项目',
-                            dept: (dept && dept.length > 0) ? dept[0].Name : '',
-                            name: data.Name,
-                            comment: data.Comments,
-                            createdAt: data.CreateTimeStr,
-                            createBy: data.CreateBy,
-                            status: Constants.getProjectStatusStr(data.Status)
-                        })
-                    })
-                }
+    //                     tempProjectList.push({
+    //                         id: data.Id,
+    //                         itemType: '项目',
+    //                         dept: (dept && dept.length > 0) ? dept[0].Name : '',
+    //                         name: data.Name,
+    //                         comment: data.Comments,
+    //                         createdAt: data.CreateTimeStr,
+    //                         createBy: data.CreateBy,
+    //                         status: Constants.getProjectStatusStr(data.Status)
+    //                     })
+    //                 })
+    //             }
 
-                this.setState({
-                    approvalList: tempProjectList, //res.data.Data.ResultData
-                    isSearching: false
-                });
-            })
-            .catch(function (error) {
-                console.log(error);
-                console.log("search fail");
-                this.setState({
-                    isSearching: false
-                });
-            });
-    }
+    //             this.setState({
+    //                 approvalList: tempProjectList, //res.data.Data.ResultData
+    //                 isSearching: false
+    //             });
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //             console.log("search fail");
+    //             this.setState({
+    //                 isSearching: false
+    //             });
+    //         });
+    // }
 
     onSearch() {
 

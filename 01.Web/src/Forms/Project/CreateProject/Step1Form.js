@@ -51,7 +51,8 @@ class Step1Form extends React.Component {
 
         selectedExternalPersonRowKeys: [],//用来记录外部成员选择表的选中项，以便清除
 
-        projectTemplates: [],
+        allProjectTemplates: [], //全部模板
+        projectTemplates: [], //根据部门过滤后的模板
         business: [],
         peopleData:[],
         pmData:[],
@@ -93,6 +94,7 @@ class Step1Form extends React.Component {
                     return;
                 }
                 let projectTemplates = [];
+                let allProjectTemplates = [];
                 
                 //加入固定模板
                 projectTemplates.push({
@@ -104,20 +106,33 @@ class Step1Form extends React.Component {
                     createdBy: ''
                 });
 
+                allProjectTemplates.push({
+                    id: Constants.FixedTemplateId,
+                    type: "其他",
+                    name: "ADM项目模板",
+                    desc: "ADM项目模板",
+                    createdAt: '',
+                    createdBy: ''
+                });
+
+                this.setState({
+                    projectTemplates
+                });
+
                 res.data.Data.ResultData.forEach(item => {
-                    projectTemplates.push({
+                    allProjectTemplates.push({
                         id: item.Id,
                         type: item.ProjectType === 1 ? "IT" : "其他",
                         name: item.Name,
                         desc: item.Description,
+                        deptId: item.DepartmentId,
                         createdAt: '',
                         createdBy: ''
                     });
                 })
 
                 this.setState({
-                    projectTemplates
-                    
+                    allProjectTemplates
                 });
             })
             .catch(function (error) {
@@ -230,6 +245,41 @@ class Step1Form extends React.Component {
         }, ()=>{
             this.getProjectPhases();
         })
+    }
+
+    onDeptChange = (e) => {
+        let projectTemplates =  [];
+                
+        //加入固定模板
+        projectTemplates.push({
+            id: Constants.FixedTemplateId,
+            type: "其他",
+            name: "ADM项目模板",
+            desc: "ADM项目模板",
+            createdAt: '',
+            createdBy: ''
+        });
+
+        let temp = this.state.allProjectTemplates.filter(pt => pt.deptId === e);
+
+        if(temp)
+        {
+            temp.forEach(t => {
+                projectTemplates.push({
+                    id: t.id,
+                    type: t.type,
+                    name: t.name,
+                    desc: t.desc,
+                    createdAt: '',
+                    createdBy: ''
+                });
+            });
+        }
+
+        this.setState({
+            projectTemplates
+        })
+
     }
 
     getProjectPhases()
@@ -432,7 +482,7 @@ class Step1Form extends React.Component {
                                 ],
                                 initialValue: this.props.data.dept ? this.props.data.dept : null
                             })(
-                                <Select style={{ width: '200px' }} >
+                                <Select style={{ width: '200px' }} onChange={this.onDeptChange.bind(this)}>
                                     {departmentOptions}
                                 </Select>
                             )}

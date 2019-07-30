@@ -242,7 +242,7 @@ namespace GDS.BLL
             {
                 var viewTemplate = dal.GetView_TemplateByTemplateId(id);
 
-                if (departmentList.Exists(x=>x.Id == viewTemplate.DepartId))
+                if (departmentList.Exists(x=>x.Id == viewTemplate.DepartmentId))
                 {
                     return true;
                 }

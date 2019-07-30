@@ -145,6 +145,18 @@ class Step2FormAMD extends React.Component {
                     </Col>
                 </Row>
                 <Row>
+                    <Col span={12} style={leftFormTopItemStyle}>
+                        <Form.Item label="项目编号">
+                            <Input disabled defaultValue={this.props.data["no"]} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12} style={rightFormTopItemStyle}>
+                        <Form.Item label="ADM">
+                            <Input disabled defaultValue={this.props.data["adm"]} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
                     <Col span={12} style={leftFormItemStyle}>
                         <Form.Item label="签约客户名称">
                             <Input disabled defaultValue={this.props.data["signedCustomer"]} />

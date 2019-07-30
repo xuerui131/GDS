@@ -17,6 +17,7 @@ namespace GDS.Entity
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int DepartmentId { get; set; }
         public Nullable<int> ProjectType { get; set; }
         public int Status { get; set; } //审批状态，0草稿、1同意、2拒绝
         public string CreateBy { get; set; }

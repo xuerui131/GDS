@@ -27,7 +27,8 @@ class Step1 extends React.Component {
     state = {
        // confirmDirty: false,
         //autoCompleteResult: [],
-        projectTypeList: []
+        //projectTypeList: []
+        department:[]
     };
 
     componentDidMount() {
@@ -49,18 +50,40 @@ class Step1 extends React.Component {
         //   name: this.props.data.phaseName
         // })
 
-        axios.get(`${Constants.APIBaseUrl}/ProjectType/GetProjectTypeList`, {
-            headers: { 'Content-Type': 'application/json' }
-          })
-            .then(res => {
-                this.setState({
-                    projectTypeList: res.data.Data.ResultData
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        // axios.get(`${Constants.APIBaseUrl}/ProjectType/GetProjectTypeList`, {
+        //     headers: { 'Content-Type': 'application/json' }
+        //   })
+        //     .then(res => {
+        //         this.setState({
+        //             projectTypeList: res.data.Data.ResultData
+        //         })
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+        this.getDepartmentList();
       }
+
+      getDepartmentList(){
+        axios.get(`${Constants.APIBaseUrl}/Department/GetAllDepartment`, {
+            headers: { 'Content-Type': 'application/json' }
+        }).then(res => {
+            if (!res || !res.data || !res.data.Data) {
+                return;
+            }
+            let department = [];
+            res.data.Data.forEach(item => {
+                department.push({
+                    key: item.Id,
+                    name: item.Name,
+                });
+            })
+
+            this.setState({
+                department
+            });
+        })
+    }
 
     handleSubmit = e => {
         e.preventDefault();
@@ -120,9 +143,11 @@ class Step1 extends React.Component {
         //     <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
         // ));
 
-        let projectTypes = this.state.projectTypeList.map(pt => (
-            <Option value={pt.Id}>{pt.Name}</Option>
-        ));
+        // let projectTypes = this.state.projectTypeList.map(pt => (
+        //     <Option value={pt.Id}>{pt.Name}</Option>
+        // ));
+
+        let departmentOptions = this.state.department.map(p => <Option key={p.key} value={p.key}>{p.name}</Option>);
 
         return (
             <Form {...formItemLayout} onSubmit={this.handleSubmit} style={{marginRight:"200px"}}>
@@ -147,12 +172,12 @@ class Step1 extends React.Component {
                         rules: [{ required: true, message: '请输入模板备注', whitespace: true }],
                     })(<TextArea rows={4} autosize={{minRows:4, maxRows:10}} />)}
                 </Form.Item>
-                <Form.Item label="所属类别名称">
-                    {getFieldDecorator('type', {
-                        rules: [{ required: true, message: '请选择所属类别' }],
+                <Form.Item label="所属部门">
+                    {getFieldDecorator('deptId', {
+                        rules: [{ required: true, message: '请选择所属部门' }],
                     })(
                         <Select style={{ width: 300 }}>
-                           {projectTypes}
+                           {departmentOptions}
                         </Select>,
                     )}
                 </Form.Item>

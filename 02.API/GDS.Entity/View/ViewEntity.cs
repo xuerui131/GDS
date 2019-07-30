@@ -59,9 +59,9 @@ namespace GDS.Entity
 
     public class View_Template:Template
     {
-        public string ProjectTypeName { get; set; }
+        public string DepartmentName { get; set; }
 
-        public int DepartId { get; set; }
+        //public int DepartId { get; set; }
 
         public string CreateTimeStr { get; set; }
     }

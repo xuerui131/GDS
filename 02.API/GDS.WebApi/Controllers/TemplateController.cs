@@ -42,13 +42,13 @@ namespace GDS.WebApi.Controllers
 
                 if (!string.IsNullOrEmpty(query.DepartId))
                 {
-                    sqlCondition.Append($" and DepartId = {query.DepartId}");
+                    sqlCondition.Append($" and DepartmentId = {query.DepartId}");
                 }
 
-                if (!string.IsNullOrEmpty(query.ProjectType))
-                {
-                    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
-                }
+                //if (!string.IsNullOrEmpty(query.ProjectType))
+                //{
+                //    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
+                //}
 
                 if (!string.IsNullOrEmpty(query.Name))
                 {
@@ -93,91 +93,91 @@ namespace GDS.WebApi.Controllers
             }
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetApprovalList()
-        {
-            try
-            {
-                var queryParams = new NameValueCollection();
-                if (!ParamHelper.CheckParaQ(ref queryParams))
-                {
-                    return Json(new ResponseEntity<int>(RegularFunction.RegularSqlRegexText), JsonRequestBehavior.AllowGet);
-                }
+        //[AcceptVerbs(HttpVerbs.Get)]
+        //public ActionResult GetApprovalList()
+        //{
+        //    try
+        //    {
+        //        var queryParams = new NameValueCollection();
+        //        if (!ParamHelper.CheckParaQ(ref queryParams))
+        //        {
+        //            return Json(new ResponseEntity<int>(RegularFunction.RegularSqlRegexText), JsonRequestBehavior.AllowGet);
+        //        }
 
-                var query = new TemplateQuery(queryParams);
+        //        var query = new TemplateQuery(queryParams);
 
-                var sqlCondition = new StringBuilder();
-                sqlCondition.Append("ISNULL(IsDelete,0)!=1 and status=0");//Status审批状态为0（草稿）,1同意，2拒绝
+        //        var sqlCondition = new StringBuilder();
+        //        sqlCondition.Append("ISNULL(IsDelete,0)!=1 and status=0");//Status审批状态为0（草稿）,1同意，2拒绝
 
-                int userType = CurrenUserInfo.UserType;
-                string loginName = CurrenUserInfo.LoginName;
+        //        int userType = CurrenUserInfo.UserType;
+        //        string loginName = CurrenUserInfo.LoginName;
 
-                if (userType != GDS.Entity.Constant.ConstantDefine.Admin)  //验证审批权限
-                {
-                    var departmentList = new DepartmentBLL().GetDepartmentByAuditor(loginName);
+        //        if (userType != GDS.Entity.Constant.ConstantDefine.Admin)  //验证审批权限
+        //        {
+        //            var departmentList = new DepartmentBLL().GetDepartmentByAuditor(loginName);
 
-                    if (departmentList != null && departmentList.Count > 0)
-                    {
-                        sqlCondition.Append($" and DepartId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
-                    }
-                    else
-                    {
-                        return Json(new ResponseEntity<dynamic>(10, "权限不足", null), JsonRequestBehavior.AllowGet);
-                    }
-                }
+        //            if (departmentList != null && departmentList.Count > 0)
+        //            {
+        //                sqlCondition.Append($" and DepartId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
+        //            }
+        //            else
+        //            {
+        //                return Json(new ResponseEntity<dynamic>(10, "权限不足", null), JsonRequestBehavior.AllowGet);
+        //            }
+        //        }
 
-                if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
-                {
-                    sqlCondition.Append($" and DepartId = {query.DepartId}");
-                }
+        //        if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
+        //        {
+        //            sqlCondition.Append($" and DepartId = {query.DepartId}");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.ProjectType))
-                {
-                    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
-                }
+        //        if (!string.IsNullOrEmpty(query.ProjectType))
+        //        {
+        //            sqlCondition.Append($" and ProjectType = {query.ProjectType}");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.Name))
-                {
-                    sqlCondition.Append($" and Name like '%{query.Name}%'");
-                }
+        //        if (!string.IsNullOrEmpty(query.Name))
+        //        {
+        //            sqlCondition.Append($" and Name like '%{query.Name}%'");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.CreateBy))
-                {
-                    sqlCondition.Append($" and CreateBy like '%{query.CreateBy}%'");
-                }
+        //        if (!string.IsNullOrEmpty(query.CreateBy))
+        //        {
+        //            sqlCondition.Append($" and CreateBy like '%{query.CreateBy}%'");
+        //        }
 
-                PageRequest preq = new PageRequest
-                {
-                    TableName = " [View_Template] ",
-                    Where = sqlCondition.ToString(),
-                    Order = " Id DESC ",
-                    IsSelect = true,
-                    IsReturnRecord = true,
-                    PageSize = query.PageSize,
-                    PageIndex = query.PageIndex,
-                    FieldStr = "*"
-                };
+        //        PageRequest preq = new PageRequest
+        //        {
+        //            TableName = " [View_Template] ",
+        //            Where = sqlCondition.ToString(),
+        //            Order = " Id DESC ",
+        //            IsSelect = true,
+        //            IsReturnRecord = true,
+        //            PageSize = query.PageSize,
+        //            PageIndex = query.PageIndex,
+        //            FieldStr = "*"
+        //        };
 
-                var result = new TemplateBLL().GetView_TemplateByPage(preq);
-                result.ForEach(template => {
-                    template.CreateTimeStr = template.CreateTime.HasValue ? template.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty;
-                });
+        //        var result = new TemplateBLL().GetView_TemplateByPage(preq);
+        //        result.ForEach(template => {
+        //            template.CreateTimeStr = template.CreateTime.HasValue ? template.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty;
+        //        });
 
-                var response = new ResponseEntity<object>(true, string.Empty,
-                    new DataGridResultEntity<View_Template>
-                    {
-                        TotalRecords = preq.Out_AllRecordCount,
-                        DisplayRecords = preq.Out_PageCount,
-                        ResultData = result
-                    });
+        //        var response = new ResponseEntity<object>(true, string.Empty,
+        //            new DataGridResultEntity<View_Template>
+        //            {
+        //                TotalRecords = preq.Out_AllRecordCount,
+        //                DisplayRecords = preq.Out_PageCount,
+        //                ResultData = result
+        //            });
 
-                return Json(response, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseEntity<object>(-999, string.Empty, ""), JsonRequestBehavior.AllowGet);
-            }
-        }
+        //        return Json(response, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new ResponseEntity<object>(-999, string.Empty, ""), JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
 
         [AcceptVerbs(HttpVerbs.Get)]

@@ -20,7 +20,7 @@ namespace GDS.Query
 
     public class TemplateQuery : BaseQuery
     {
-        public string ProjectType { get; set; }
+        //public string ProjectType { get; set; }
         public string DepartId { get; set; }
 
         public string Name { get; set; }
@@ -34,7 +34,6 @@ namespace GDS.Query
         public TemplateQuery(NameValueCollection queryParams)
             : base(queryParams)
         {
-            ProjectType = queryParams["ProjectType"];
             Name = queryParams["Name"];
             DepartId = queryParams["DepartId"];
             CreateBy = queryParams["CreateBy"];

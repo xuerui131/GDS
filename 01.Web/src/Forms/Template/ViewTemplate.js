@@ -131,7 +131,7 @@ class ViewTemplate extends React.Component {
                             >
                                <TextArea disabled rows={4} autosize={{minRows:4, maxRows:10}} value={this.state.templateInfo.Description} />
                             </Form.Item>
-                            <Form.Item label="所属类别名称">
+                            <Form.Item label="所属部门">
                                 <Select disabled style={{ width: 300 }} value={this.state.templateInfo.ProjectType}> 
                                     {projectTypes}
                                 </Select>

@@ -57,6 +57,7 @@ class CreateProject extends React.Component {
                 console.log("project detail=>", res);
                 let content = {
                     id: res.data.Data.Id,
+                    no: res.data.Data.No,
                     name: res.data.Data.Name,
                     projectTypeId: res.data.Data.ProjectType,
                     templateId: res.data.Data.TemplateId,
@@ -93,6 +94,7 @@ class CreateProject extends React.Component {
                     statement: res.data.Data.Statement,//声明
                     approvedAt: res.data.Data.ApprovedAtStr? moment(res.data.Data.ApprovedAtStr): null,//立项时间
                     planCheckAt: res.data.Data.PlanCheckAtStr? moment(res.data.Data.PlanCheckAtStr): null, //计划验收时间
+                    adm: res.data.Data.ADM
                 };
                 
                 this.setState({

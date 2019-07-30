@@ -48,7 +48,7 @@ namespace GDS.WebApi.Controllers
                     Id = template.Id,
                     ItemType = "模板",
                     Name = template.Name,
-                    DepartId = template.DepartId,
+                    DepartId = template.DepartmentId,
                     Description = template.Description,
                     CreateAt = template.CreateTime,
                     CreateTimeStr = template.CreateTimeStr,
@@ -98,7 +98,7 @@ namespace GDS.WebApi.Controllers
 
                 if (departmentList != null && departmentList.Count > 0)
                 {
-                    sqlCondition.Append($" and DepartId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
+                    sqlCondition.Append($" and DepartmentId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
                 }
 
                 //if (userType != GDS.Entity.Constant.ConstantDefine.Admin)  //验证审批权限
@@ -117,13 +117,13 @@ namespace GDS.WebApi.Controllers
 
                 if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
                 {
-                    sqlCondition.Append($" and DepartId = {query.DepartId}");
+                    sqlCondition.Append($" and DepartmentId = {query.DepartId}");
                 }
 
-                if (!string.IsNullOrEmpty(query.ProjectType))
-                {
-                    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
-                }
+                //if (!string.IsNullOrEmpty(query.ProjectType))
+                //{
+                //    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
+                //}
 
                 if (!string.IsNullOrEmpty(query.Name))
                 {

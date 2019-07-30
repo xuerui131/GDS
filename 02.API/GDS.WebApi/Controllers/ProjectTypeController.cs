@@ -103,7 +103,7 @@ namespace GDS.WebApi.Controllers
 
                 if (list != null && list.Count > 0)
                 {
-                    return Json(new ResponseEntity<object>(-999, "ÏîÄ¿Àà±ðÒÑ´æÔÚ", ""), JsonRequestBehavior.AllowGet);
+                    return Json(new ResponseEntity<object>(-999, "ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½", ""), JsonRequestBehavior.AllowGet);
                 }
 
                 entity.IsDelete = 0;

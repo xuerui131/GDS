@@ -124,109 +124,109 @@ namespace GDS.WebApi.Controllers
             }
         }
 
-        [AcceptVerbs(HttpVerbs.Get)]
-        public ActionResult GetApprovalList()
-        {
-            try
-            {
-                var queryParams = new NameValueCollection();
-                if (!ParamHelper.CheckParaQ(ref queryParams))
-                {
-                    return Json(new ResponseEntity<int>(RegularFunction.RegularSqlRegexText), JsonRequestBehavior.AllowGet);
-                }
+        //[AcceptVerbs(HttpVerbs.Get)]
+        //public ActionResult GetApprovalList()
+        //{
+        //    try
+        //    {
+        //        var queryParams = new NameValueCollection();
+        //        if (!ParamHelper.CheckParaQ(ref queryParams))
+        //        {
+        //            return Json(new ResponseEntity<int>(RegularFunction.RegularSqlRegexText), JsonRequestBehavior.AllowGet);
+        //        }
 
-                int userType = CurrenUserInfo.UserType;
-                string loginName = CurrenUserInfo.LoginName;
+        //        int userType = CurrenUserInfo.UserType;
+        //        string loginName = CurrenUserInfo.LoginName;
 
-                var query = new ProjectQuery(queryParams);
+        //        var query = new ProjectQuery(queryParams);
 
-                var sqlCondition = new StringBuilder();
-                sqlCondition.Append("ISNULL(IsDelete,0)!=1 and CurrentStatus=0"); //CurrentStatus审批状态为0（草稿）
+        //        var sqlCondition = new StringBuilder();
+        //        sqlCondition.Append("ISNULL(IsDelete,0)!=1 and CurrentStatus=0"); //CurrentStatus审批状态为0（草稿）
 
-                if (userType != GDS.Entity.Constant.ConstantDefine.Admin)  //验证审批权限
-                {
-                    var departmentList = new DepartmentBLL().GetDepartmentByAuditor(loginName);
+        //        if (userType != GDS.Entity.Constant.ConstantDefine.Admin)  //验证审批权限
+        //        {
+        //            var departmentList = new DepartmentBLL().GetDepartmentByAuditor(loginName);
 
-                    if (departmentList != null && departmentList.Count > 0)
-                    {
-                        sqlCondition.Append($" and DepartId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
-                    }
-                    else
-                    {
-                        return Json(new ResponseEntity<dynamic>(10, "权限不足", null), JsonRequestBehavior.AllowGet);
-                    }
-                }
+        //            if (departmentList != null && departmentList.Count > 0)
+        //            {
+        //                sqlCondition.Append($" and DepartId in ({string.Join(",", departmentList.Select(x => x.Id))}) ");
+        //            }
+        //            else
+        //            {
+        //                return Json(new ResponseEntity<dynamic>(10, "权限不足", null), JsonRequestBehavior.AllowGet);
+        //            }
+        //        }
 
-                //if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
-                //{
-                //    sqlCondition.Append($" and (createby = '{loginName}' or projectmanager = '{loginName}' or charindex(';{loginName};', ';' + TeamMembers + ';') > 0) ");
-                //}
-                //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
-                //{
-                //    sqlCondition.Append($"and charindex(';{loginName};', ';' + TeamMembers + ';') > 0");
-                //}
-                if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
-                {
-                    sqlCondition.Append($" and (createby = '{loginName}' or charindex('{loginName}', projectmanager) >  0 or charindex('{loginName}', TeamMembers) > 0) ");
-                }
-                //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
-                //{
-                //    sqlCondition.Append($"and charindex(';{loginName};', TeamMembers) > 0");
-                //}
+        //        //if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
+        //        //{
+        //        //    sqlCondition.Append($" and (createby = '{loginName}' or projectmanager = '{loginName}' or charindex(';{loginName};', ';' + TeamMembers + ';') > 0) ");
+        //        //}
+        //        //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
+        //        //{
+        //        //    sqlCondition.Append($"and charindex(';{loginName};', ';' + TeamMembers + ';') > 0");
+        //        //}
+        //        if (userType == GDS.Entity.Constant.ConstantDefine.ProjectManager) //
+        //        {
+        //            sqlCondition.Append($" and (createby = '{loginName}' or charindex('{loginName}', projectmanager) >  0 or charindex('{loginName}', TeamMembers) > 0) ");
+        //        }
+        //        //else if (userType == GDS.Entity.Constant.ConstantDefine.User) //
+        //        //{
+        //        //    sqlCondition.Append($"and charindex(';{loginName};', TeamMembers) > 0");
+        //        //}
 
-                if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
-                {
-                    sqlCondition.Append($" and BusinessDept = {query.DepartId}");
-                }
+        //        if (!string.IsNullOrEmpty(query.DepartId) && query.DepartId != "0")
+        //        {
+        //            sqlCondition.Append($" and BusinessDept = {query.DepartId}");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.ProjectType))
-                {
-                    sqlCondition.Append($" and ProjectType = {query.ProjectType}");
-                }
+        //        if (!string.IsNullOrEmpty(query.ProjectType))
+        //        {
+        //            sqlCondition.Append($" and ProjectType = {query.ProjectType}");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.Name))
-                {
-                    sqlCondition.Append($" and Name like '%{query.Name}%'");
-                }
+        //        if (!string.IsNullOrEmpty(query.Name))
+        //        {
+        //            sqlCondition.Append($" and Name like '%{query.Name}%'");
+        //        }
 
-                if (!string.IsNullOrEmpty(query.CreateBy))
-                {
-                    sqlCondition.Append($" and CreateBy like '%{query.CreateBy}%'");
-                }
+        //        if (!string.IsNullOrEmpty(query.CreateBy))
+        //        {
+        //            sqlCondition.Append($" and CreateBy like '%{query.CreateBy}%'");
+        //        }
 
-                PageRequest preq = new PageRequest
-                {
-                    TableName = " [View_Project] ",
-                    Where = sqlCondition.ToString(),
-                    Order = " Id DESC ",
-                    IsSelect = true,
-                    IsReturnRecord = true,
-                    PageSize = query.PageSize,
-                    PageIndex = query.PageIndex,
-                    FieldStr = "*"
-                };
+        //        PageRequest preq = new PageRequest
+        //        {
+        //            TableName = " [View_Project] ",
+        //            Where = sqlCondition.ToString(),
+        //            Order = " Id DESC ",
+        //            IsSelect = true,
+        //            IsReturnRecord = true,
+        //            PageSize = query.PageSize,
+        //            PageIndex = query.PageIndex,
+        //            FieldStr = "*"
+        //        };
 
-                var result = new ProjectBLL().GetView_ProjectByPage(preq);
+        //        var result = new ProjectBLL().GetView_ProjectByPage(preq);
 
-                result.ForEach(project => {
-                    project.CreateTimeStr = project.CreateTime.HasValue ? project.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty;
-                });
+        //        result.ForEach(project => {
+        //            project.CreateTimeStr = project.CreateTime.HasValue ? project.CreateTime.Value.ToString("yyyy-MM-dd") : string.Empty;
+        //        });
 
-                var response = new ResponseEntity<object>(true, string.Empty,
-                    new DataGridResultEntity<View_Project>
-                    {
-                        TotalRecords = preq.Out_AllRecordCount,
-                        DisplayRecords = preq.Out_PageCount,
-                        ResultData = result
-                    });
+        //        var response = new ResponseEntity<object>(true, string.Empty,
+        //            new DataGridResultEntity<View_Project>
+        //            {
+        //                TotalRecords = preq.Out_AllRecordCount,
+        //                DisplayRecords = preq.Out_PageCount,
+        //                ResultData = result
+        //            });
 
-                return Json(response, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new ResponseEntity<object>(-999, string.Empty, ""), JsonRequestBehavior.AllowGet);
-            }
-        }
+        //        return Json(response, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new ResponseEntity<object>(-999, string.Empty, ""), JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetProjectById(int Id)

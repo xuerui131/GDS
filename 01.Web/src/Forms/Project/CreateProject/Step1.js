@@ -47,6 +47,7 @@ class CreateProjectStep1 extends React.Component {
         var values = this.props.form.getFieldsValue();
         let body = {
             Id: this.props.data.id,
+            NO: this.props.data.no,
             Name: values.name,
             ProjectType: values.projectTypeId,
             TemplateId: values.templateId,
@@ -84,6 +85,7 @@ class CreateProjectStep1 extends React.Component {
             Statement: values.statement,     //申明
             ApprovedAt: values.approvedAt,   //立项时间
             PlanCheckAt: values.planCheckAt, //计划验收时间
+            ADM: values.adm
         };
 
         let that = this;
