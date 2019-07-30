@@ -18,8 +18,8 @@ const projectMemberColumns = [
         render: text => <a href="javascript:;">{text}</a>,
     },
     {
-        title: '部门',
-        dataIndex: 'dept',
+        title: '账号',
+        dataIndex: 'loginName',
     }
 ];
 
