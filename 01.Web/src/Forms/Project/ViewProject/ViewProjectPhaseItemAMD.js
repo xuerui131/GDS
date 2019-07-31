@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Tabs, Button, notification, Form, Input, Select, DatePicker, Upload, Icon, Row, Col, Checkbox, Radio, Table, InputNumber } from 'antd';
+import { Popconfirm, Button, notification, Form, Input, Select, DatePicker, Upload, Icon, Row, Col, Checkbox, Radio, Table, InputNumber } from 'antd';
 
 import { Constants } from '../../../Common/Constants';
 
@@ -10,6 +10,8 @@ import moment from 'moment';
 
 const FieldStatus = "Status";
 const FieldAMDContentJson = "AMDContentJson";
+
+const { Option } = Select;
 
 class DocUpload extends React.Component {
     state = {
@@ -841,6 +843,7 @@ class ViewProjectAMDPhase5 extends React.Component {
 
     Submit(){
         this.props.form.validateFieldsAndScroll((err, values) => {
+            debugger
             if (!err) {
 
                 this.UpdateAMDContentJson(values);
@@ -916,7 +919,17 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 })(<Radio.Group>
                                     <Radio value={1}>是</Radio>
                                     <Radio value={2}>否</Radio>
-                                </Radio.Group>) : null}
+                                </Radio.Group>)
+                            : null}
+                            
+                             {/* {this.props.data[FieldStatus] === 1 && this.state.content.isWholeBuildingCustomer ===2 ? //阶段处于可编辑（进行中），且不是整栋客户
+                                <div>
+                                    {getFieldDecorator('machineRoomList')
+                                                (<EditableTable></EditableTable>)}
+                                </div>
+                                
+                            : null} */}
+
                             {this.props.data[FieldStatus] === 2 ? <Radio.Group disabled value={this.state.content.isWholeBuildingCustomer}>
                                     <Radio value={1}>是</Radio>
                                     <Radio value={2}>否</Radio>
@@ -928,61 +941,22 @@ class ViewProjectAMDPhase5 extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col span={8} style={leftFormItemStyle}>
-                        <Form.Item label="机房">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('machineRoom', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请填写机房',
-                                        },
-                                    ],
-                                    initialValue: this.state.content.machineRoom ? this.state.content.machineRoom : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.machineRoom} /> : null}
-                        </Form.Item>
+                    <Col span={24} style={WholeLineItemStyle}>
+                        {/* {this.props.data[FieldStatus] === 1 && this.state.content.isWholeBuildingCustomer === 2 ? //阶段处于可编辑（进行中），且不是整栋客户
+                            <div>
+                                {getFieldDecorator('machineRoomList')
+                                    (<EditableTable></EditableTable>)}
+                            </div>
+
+                            : null} */}
+                              {getFieldDecorator('machineRoomList')
+                                    (<EditableTable></EditableTable>)}
                     </Col>
-                    <Col span={8} style={rightFormItemStyle}>
-                        <Form.Item label="机柜数">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('cabinet', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请填写机柜数',
-                                        },
-                                    ],
-                                    initialValue: this.state.content.cabinet ? this.state.content.cabinet : null
-                                })(
-                                    <InputNumber ></InputNumber>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.cabinet} /> : null}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={rightFormItemStyle}>
-                        <Form.Item label="机柜号">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('cabinetNo', {
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: '请填写机柜号',
-                                        },
-                                    ],
-                                    initialValue: this.state.content.cabinetNo ? this.state.content.cabinetNo : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.cabinetNo} /> : null}
-                        </Form.Item>
+                    <Col span={0} style={rightFormItemStyle}>
+
                     </Col>
                 </Row>
+               
                 {/* 配电 - 开始*/}
                 <Row>
                     <Col span={12} style={leftFormItemStyle}>
@@ -993,14 +967,17 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('powerAvailability', {
                                     rules: [
-                                        {/* {
-                                            required: true,
-                                            message: '请填写机柜数',
-                                        }, */}
+                                   
                                     ],
-                                    initialValue: this.state.content.powerAvailability ? this.state.content.powerAvailability : null
+                                    initialValue: this.state.content.powerAvailability ? this.state.content.powerAvailability : '99.9%'
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='99.9%'>99.9%</Option>
+                                        <Option key={2} value='99.99%'>99.99%</Option>
+                                        <Option key={3} value='99.995%'>99.995%</Option>
+                                        <Option key={4} value='99.999%'>99.999%</Option>
+                                        <Option key={5} value='100%'>100%</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.powerAvailability} /> : null}
@@ -1015,14 +992,17 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('coolingAvailability', {
                                     rules: [
-                                        {/* {
-                                            required: true,
-                                            message: '请填写机柜数',
-                                        }, */}
+                                       
                                     ],
-                                    initialValue: this.state.content.coolingAvailability ? this.state.content.coolingAvailability : null
+                                    initialValue: this.state.content.coolingAvailability ? this.state.content.coolingAvailability : '99.9%'
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='99.9%'>99.9%</Option>
+                                        <Option key={2} value='99.99%'>99.99%</Option>
+                                        <Option key={3} value='99.995%'>99.995%</Option>
+                                        <Option key={4} value='99.999%'>99.999%</Option>
+                                        <Option key={5} value='NA'>NA</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.coolingAvailability} /> : null}
@@ -1042,9 +1022,9 @@ class ViewProjectAMDPhase5 extends React.Component {
                                             message: '请填写机柜数',
                                         }, */}
                                     ],
-                                    initialValue: this.state.content.upsTime ? this.state.content.upsTime : null
+                                    initialValue: this.state.content.upsTime ? this.state.content.upsTime : 15
                                 })(
-                                    <Input ></Input>
+                                    <div><InputNumber></InputNumber><span>Mins</span></div>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.upsTime} /> : null}
@@ -1064,9 +1044,15 @@ class ViewProjectAMDPhase5 extends React.Component {
                                             message: '请填写机柜数',
                                         }, */}
                                     ],
-                                    initialValue: this.state.content.upsRedundance ? this.state.content.upsRedundance : null
+                                    initialValue: this.state.content.upsRedundance ? this.state.content.upsRedundance : 'N+1'
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='N'>N</Option>
+                                        <Option key={2} value='N+1'>N+1</Option>
+                                        <Option key={3} value='N+2'>N+2</Option>
+                                        <Option key={4} value='2N'>2N</Option>
+                                        <Option key={5} value='2(N+1)'>2(N+1)</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.upsRedundance} /> : null}
@@ -1086,9 +1072,15 @@ class ViewProjectAMDPhase5 extends React.Component {
                                             message: '请填写机柜数',
                                         }, */}
                                     ],
-                                    initialValue: this.state.content.generatorGroup ? this.state.content.generatorGroup : null
+                                    initialValue: this.state.content.generatorGroup ? this.state.content.generatorGroup :'N+1'
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='N'>N</Option>
+                                        <Option key={2} value='N+1'>N+1</Option>
+                                        <Option key={3} value='N+2'>N+2</Option>
+                                        <Option key={4} value='2N'>2N</Option>
+                                        <Option key={5} value='2(N+1)'>2(N+1)</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.generatorGroup} /> : null}
@@ -1109,9 +1101,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('airconditioner', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.airconditioner ? this.state.content.airconditioner : null
+                                    initialValue: this.state.content.airconditioner ? this.state.content.airconditioner : "精密空调"
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='精密空调'>精密空调</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.airconditioner} /> : null}
@@ -1127,9 +1121,22 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('airconditionerRedundance', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.airconditionerRedundance ? this.state.content.airconditionerRedundance : null
+                                    initialValue: this.state.content.airconditionerRedundance ? this.state.content.airconditionerRedundance : 'N+20%'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='N'>N</Option>
+                                        <Option key={2} value='N+1'>N+1</Option>
+                                        <Option key={2} value='N+2'>N+2</Option>
+                                        <Option key={3} value='N+20%'>N+20%</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.airconditionerRedundance} /> : null}
@@ -1147,37 +1154,29 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{fontSize:'16px', textAlign:'center'}}>温度</div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
                         <Form.Item label="上限">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('upperLimitTemperature', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.upperLimitTemperature ? this.state.content.upperLimitTemperature : null
+                                    initialValue: this.state.content.upperLimitTemperature ? this.state.content.upperLimitTemperature : 20
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.upperLimitTemperature} /> : null}
                         </Form.Item>
                     </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'20px', textAlign:'center'}}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'16px', textAlign:'center'}}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={rightFormItemStyle}>
                         <Form.Item label="下限">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('downLimitTemperature', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.downLimitTemperature ? this.state.content.downLimitTemperature : null
+                                    initialValue: this.state.content.downLimitTemperature ? this.state.content.downLimitTemperature : 25
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.downLimitTemperature} /> : null}
@@ -1213,22 +1212,36 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{fontSize:'16px', textAlign:'center'}}>湿度</div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={rightFormItemStyle}>
                         <Form.Item label="上限">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('upperLimitHumidity', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.upperLimitHumidity ? this.state.content.upperLimitHumidity : null
+                                    initialValue: this.state.content.upperLimitHumidity ? this.state.content.upperLimitHumidity : 40
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.upperLimitHumidity} /> : null}
                         </Form.Item>
                     </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="下限">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('downLimitHumidity', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.downLimitHumidity ? this.state.content.downLimitHumidity : 60
+                                })(
+                                    <InputNumber ></InputNumber>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ? 
+                                <Input disabled value={this.state.content.downLimitHumidity} /> : null}
+                        </Form.Item>
+                    </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{fontSize:'20px', textAlign:'center'}}></div>
                     </Col>
@@ -1249,7 +1262,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 <Input disabled value={this.state.content.downLimitHumidity} /> : null}
                         </Form.Item>
                     </Col>
-                </Row>
+                </Row> */}
                 <Row>
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{fontSize:'20px', textAlign:'center'}}></div>
@@ -1368,20 +1381,30 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{fontSize:'20px', textAlign:'center'}}>消防</div>
                     </Col>
                     <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'16px', textAlign:'center'}}>系统</div>
+                        <div style={{fontSize:'16px', textAlign:'center'}}></div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="FM200">
+                        <Form.Item label="系统">
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('fm200', {
+                                getFieldDecorator('system', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.fm200 ? this.state.content.fm200 : null
+                                    initialValue: this.state.content.system ? this.state.content.system : 'FM200'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='FM200'>FM200</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.fm200} /> : null}
+                                <Input disabled value={this.state.content.system} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1390,20 +1413,30 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{fontSize:'20px', textAlign:'center'}}></div>
                     </Col>
                     <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'16px', textAlign:'center'}}>侦测</div>
+                        <div style={{fontSize:'16px', textAlign:'center'}}></div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="常规报警系统">
+                        <Form.Item label="侦测">
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('normalAlarmSystem', {
+                                getFieldDecorator('detect', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.normalAlarmSystem ? this.state.content.normalAlarmSystem : null
+                                    initialValue: this.state.content.detect ? this.state.content.detect : '常规报警系统'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='常规报警系统'>常规报警系统</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.normalAlarmSystem} /> : null}
+                                <Input disabled value={this.state.content.detect} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1420,9 +1453,19 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('controlSystem', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.controlSystem ? this.state.content.controlSystem : null
+                                    initialValue: this.state.content.controlSystem ? this.state.content.controlSystem : '自动'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='自动'>自动</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.controlSystem} /> : null}
@@ -1437,20 +1480,73 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '20px', textAlign: 'center' }}>变更管理</div>
                     </Col>
                     <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}>提前通知时间</div>
+                    </Col>
+                    <Col span={16} style={rightFormItemStyle}>
+                        <Form.Item label="重大">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('notifyTime_Significant', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.notifyTime_Significant ? this.state.content.notifyTime_Significant : null
+                                })(
+                                    <div>
+                                        <InputNumber></InputNumber>
+                                        <span>天</span>
+                                    </div>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.notifyTime_Significant} /> : null}
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="提前通知时间">
+                        <Form.Item label="较大">
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('notifyTime', {
+                                getFieldDecorator('notifyTime_great', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.notifyTime ? this.state.content.notifyTime : null
+                                    initialValue: this.state.content.notifyTime_great ? this.state.content.notifyTime_great : null
                                 })(
-                                    <Input ></Input>
+                                    <div>
+                                        <InputNumber></InputNumber>
+                                        <span>天</span>
+                                    </div>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.notifyTime} /> : null}
+                                <Input disabled value={this.state.content.notifyTime_great} /> : null}
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={16} style={rightFormItemStyle}>
+                        <Form.Item label="一般">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('notifyTime_normal', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.notifyTime_normal ? this.state.content.notifyTime_normal : null
+                                })(
+                                    <div>
+                                        <InputNumber></InputNumber>
+                                        <span>天</span>
+                                    </div>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.notifyTime_normal} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1514,9 +1610,12 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('responseTime2', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.responseTime2 ? this.state.content.responseTime2 : null
+                                    initialValue: this.state.content.responseTime2 ? this.state.content.responseTime2 : '15'
                                 })(
-                                    <Input ></Input>
+                                    <div>
+                                        <Input></Input>
+                                        <span>分钟</span>
+                                    </div>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.responseTime2} /> : null}
@@ -2483,6 +2582,16 @@ const leftFormItemStyle = {
     borderWidth: '1px'
 }
 
+const WholeLineItemStyle = {
+    border: 'solid',
+    height: 'auto',
+    // borderRight: 'none',
+    // borderTop: 'none',
+    padding: '10px 10px 10px 10px',
+    borderColor: 'grey',
+    borderWidth: '1px',
+}
+
 const leftTextAreaFormItemStyle = {
     border: 'solid',
     height: '115px',
@@ -2518,3 +2627,270 @@ const rightFormItemStyle = {
     borderColor: 'grey',
     borderWidth: '1px'
 }
+
+const EditableContext = React.createContext();
+
+const EditableRow = ({ form, index, ...props }) => (
+  <EditableContext.Provider value={form}>
+    <tr {...props} />
+  </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
+
+
+class EditableCell extends React.Component {
+    state = {
+      editing: false,
+    };
+  
+    toggleEdit = () => {
+      const editing = !this.state.editing;
+      this.setState({ editing }, () => {
+        if (editing) {
+          this.input.focus();
+        }
+      });
+    };
+  
+    save = e => {
+      const { record, handleSave } = this.props;
+      this.form.validateFields((error, values) => {
+        if (error && error[e.currentTarget.id]) {
+          return;
+        }
+        this.toggleEdit();
+        handleSave({ ...record, ...values });
+      });
+    };
+  
+    renderCell = form => {
+      this.form = form;
+      const { children, dataIndex, record, title } = this.props;
+      const { editing } = this.state;
+      return editing ? (
+        <Form.Item style={{ margin: 0 }}>
+          {form.getFieldDecorator(dataIndex, {
+            rules: [
+              {
+                required: true,
+                message: `${title} is required.`,
+              },
+            ],
+            initialValue: record[dataIndex],
+          })(<Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />)}
+        </Form.Item>
+      ) : (
+          <div
+            className="editable-cell-value-wrap"
+            style={{ paddingRight: 24 }}
+            onClick={this.toggleEdit}
+          >
+            {children}
+          </div>
+        );
+    };
+  
+    render() {
+      const {
+        editable,
+        dataIndex,
+        title,
+        record,
+        index,
+        handleSave,
+        children,
+        ...restProps
+      } = this.props;
+      return (
+        <td {...restProps}>
+          {editable ? (
+            <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>
+          ) : (
+              children
+            )}
+        </td>
+      );
+    }
+  }
+
+class EditableTable extends React.Component {
+    constructor(props) {
+      super(props);
+      this.columns = [
+        {
+          title: '机房',
+          dataIndex: 'machineRoom',
+          width: '25%',
+          editable: true,
+        },
+        {
+          title: '机柜',
+          dataIndex: 'cabinet',
+          editable: true,
+        },
+        {
+          title: '机柜数',
+          dataIndex: 'cabinetNo',
+          editable: true,
+        },
+        {
+            title: '机柜类型',
+            dataIndex: 'cabinetType',
+            editable: false,
+            render: (value, record) => (
+                <Radio.Group defaultValue={1} onChange={(e) => this.handleCabinetTypeChange(e, value, record)}>
+                    <Radio value={1}>整包</Radio>
+                    <Radio value={2}>隔笼</Radio>
+                    <Radio value={3}>隔笼散柜</Radio>
+                </Radio.Group>
+            ),
+          },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          render: (text, record) =>
+            this.state.dataSource.length >= 1 ? (
+              <Popconfirm title="确定删除?" onConfirm={() => this.handleDelete(record.key)}>
+                <a href="javascript:;">删除</a>
+              </Popconfirm>
+            ) : null,
+        },
+      ];
+  
+      this.state = {
+        dataSource: [
+        ],
+        count: 0,
+      };
+  
+    }
+  
+    componentWillReceiveProps(nextProps) {
+      if (nextProps["data-__field"] && nextProps["data-__field"].value && Array.isArray(nextProps["data-__field"].value)) {
+        let datasource = [];
+        nextProps["data-__field"].value.forEach((item, index) => {
+          datasource.push({
+            key: item.key,
+            machineRoom: item.machineRoom,
+            cabinet: item.cabinet,          
+            cabinetNo: item.cabinetNo,
+            cabinetType: item.cabinetType
+          })
+        });
+  
+        this.setState({
+          dataSource: datasource,
+        })
+      }
+    }
+  
+    handleCabinetTypeChange(e, value, row) {
+      const newData = [...this.state.dataSource];
+      const index = newData.findIndex(item => row.key === item.key);
+      const item = newData[index];
+      item.cabinetType = e.target.value;
+      newData.splice(index, 1, {
+        ...item,
+        ...row,
+      });
+      this.setState({ dataSource: newData }, () => {
+        this.handleChange()
+      });
+    }
+  
+  
+    handleChange = () => {
+      let { onChange } = this.props;
+      if (onChange) {
+        onChange(this.state.dataSource);
+      }
+    }
+  
+    handleDelete = key => {
+      const dataSource = [...this.state.dataSource];
+      this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    };
+  
+    handleAdd = () => {
+      const { count, dataSource } = this.state;
+      const newData = {
+        // key: count,
+        // name: `文档名`,
+        // comment: '文档描述',
+        // isRequired: false,
+        key: count,
+        machineRoom: '机房',
+        cabinet: '机柜',          
+        cabinetNo: 0,
+        cabinetType: 1
+      };
+      this.setState({
+        dataSource: [...dataSource, newData],
+        count: count + 1,
+      }, () => {
+        this.handleChange()
+      });
+    };
+  
+    handleSave = row => {
+      const newData = [...this.state.dataSource];
+  
+      const index = newData.findIndex(item => row.key === item.key);
+      const item = newData[index];
+      newData.splice(index, 1, {
+        ...item,
+        ...row,
+      });
+      this.setState({ dataSource: newData }, () => {
+        this.handleChange()
+      });
+  
+  
+    };
+  
+    render() {
+      const { dataSource } = this.state;
+      const components = {
+        body: {
+          row: EditableFormRow,
+          cell: EditableCell,
+        },
+      };
+      const columns = this.columns.map(col => {
+        if (!col.editable) {
+          return col;
+        }
+        return {
+          ...col,
+          onCell: record => ({
+            record,
+            editable: col.editable,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            handleSave: this.handleSave,
+          }),
+        };
+      });
+  
+      let myStyle = { ...this.props.style };
+      return (
+        <div style={myStyle}>
+          <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>
+            添加
+            </Button>
+          <Table
+            components={components}
+            rowClassName={() => 'editable-row'}
+            bordered
+            dataSource={dataSource}
+            columns={columns}
+            locale={{
+                emptyText: '暂无数据',
+            }}
+            pagination={false}
+          />
+        </div>
+      );
+    }
+  }
