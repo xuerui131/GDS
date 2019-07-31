@@ -84,7 +84,7 @@ class Step1Form extends React.Component {
             })
         }
 
-        if(this.props.data.dept)
+        if(this.props.data.dept && this.state.department)
         {
             this.setTemplateList(this.props.data.dept);
         }
@@ -138,6 +138,11 @@ class Step1Form extends React.Component {
                 
                 this.setState({
                     allProjectTemplates
+                }, () => {
+                    if(this.props.data.dept && this.state.department)
+                    {
+                        this.setTemplateList(this.props.data.dept);
+                    }
                 });
             })
             .catch(function (error) {
@@ -162,6 +167,11 @@ class Step1Form extends React.Component {
 
             this.setState({
                 department
+            }, () => {
+                if(this.props.data.dept && this.state.department)
+                {
+                    this.setTemplateList(this.props.data.dept);
+                }
             });
         })
     }

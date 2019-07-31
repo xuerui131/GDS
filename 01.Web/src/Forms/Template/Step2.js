@@ -787,7 +787,6 @@ class Step2 extends React.Component {
   };
 
   componentDidMount() {
-    console.log("step2 props data", this.props.data);
     let items = this.state.phaseItems;
     if (!this.props.data) {
       items.push({

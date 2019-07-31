@@ -756,7 +756,8 @@ export class ViewProjectAMDPhase4 extends React.Component {
 class ViewProjectAMDPhase5 extends React.Component {
     state={
         isSaving: false,
-        content: {}
+        content: {},
+        isWholeBuildingCustomer: 2
     }
 
     componentDidMount()
@@ -869,10 +870,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('checkedAt', {
                                     rules: [
-                                        {
-                                            required: true,
-                                            message: '请填写实际验收时间',
-                                        },
+                                      
                                     ],
                                     initialValue: this.state.content.checkedAt ? moment(this.state.content.checkedAt) : null
                                 })(<DatePicker></DatePicker>) : null}
@@ -884,10 +882,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('chargeAt', {
                                     rules: [
-                                        {
-                                            required: true,
-                                            message: '请填写计费开始时间',
-                                        },
+                                       
                                     ],
                                     initialValue: this.state.content.chargeAt ? moment(this.state.content.chargeAt) : null
                                 })(<DatePicker></DatePicker>) : null}
@@ -900,8 +895,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('chargeEndAt', {
                                     rules: [
                                         {
-                                            required: true,
-                                            message: '请填写计费结束时间',
+                                           
                                         },
                                     ],
                                     initialValue: this.state.content.chargeEndAt ? moment(this.state.content.chargeEndAt) : null
@@ -916,7 +910,12 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('isWholeBuildingCustomer', {
                                     initialValue: this.state.content.isWholeBuildingCustomer ? this.state.content.isWholeBuildingCustomer : 2
-                                })(<Radio.Group>
+                                })(<Radio.Group onChange={(e) => {
+                                    debugger
+                                    this.setState({
+                                        isWholeBuildingCustomer: e.target.value
+                                    })
+                                }}>
                                     <Radio value={1}>是</Radio>
                                     <Radio value={2}>否</Radio>
                                 </Radio.Group>)
@@ -940,22 +939,27 @@ class ViewProjectAMDPhase5 extends React.Component {
                        
                     </Col>
                 </Row>
-                <Row>
-                    <Col span={24} style={WholeLineItemStyle}>
-                        {/* {this.props.data[FieldStatus] === 1 && this.state.content.isWholeBuildingCustomer === 2 ? //阶段处于可编辑（进行中），且不是整栋客户
+                {
+                    this.state.isWholeBuildingCustomer === 2 ?
+                        <Row>
+                            <Col span={24} style={WholeLineItemStyle}>
+                                {/* {this.props.data[FieldStatus] === 1 && this.state.content.isWholeBuildingCustomer === 2 ? //阶段处于可编辑（进行中），且不是整栋客户
                             <div>
                                 {getFieldDecorator('machineRoomList')
                                     (<EditableTable></EditableTable>)}
                             </div>
 
                             : null} */}
-                              {getFieldDecorator('machineRoomList')
-                                    (<EditableTable></EditableTable>)}
-                    </Col>
-                    <Col span={0} style={rightFormItemStyle}>
+                                {getFieldDecorator('machineRoomList')
+                                    (<EditableTable data={this.state.content.machineRoomList? this.state.content.machineRoomList : {}}></EditableTable>)}
+                            </Col>
+                            <Col span={0} style={rightFormItemStyle}>
 
-                    </Col>
-                </Row>
+                            </Col>
+                        </Row>
+                        : null
+                }
+                
                
                 {/* 配电 - 开始*/}
                 <Row>
@@ -971,7 +975,15 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.powerAvailability ? this.state.content.powerAvailability : '99.9%'
                                 })(
-                                    <Select>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
                                         <Option key={1} value='99.9%'>99.9%</Option>
                                         <Option key={2} value='99.99%'>99.99%</Option>
                                         <Option key={3} value='99.995%'>99.995%</Option>
@@ -996,8 +1008,16 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.coolingAvailability ? this.state.content.coolingAvailability : '99.9%'
                                 })(
-                                    <Select>
-                                        <Option key={1} value='99.9%'>99.9%</Option>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                       <Option key={1} value='99.9%'>99.9%</Option>
                                         <Option key={2} value='99.99%'>99.99%</Option>
                                         <Option key={3} value='99.995%'>99.995%</Option>
                                         <Option key={4} value='99.999%'>99.999%</Option>
@@ -1017,17 +1037,14 @@ class ViewProjectAMDPhase5 extends React.Component {
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('upsTime', {
                                     rules: [
-                                        {/* {
-                                            required: true,
-                                            message: '请填写机柜数',
-                                        }, */}
                                     ],
                                     initialValue: this.state.content.upsTime ? this.state.content.upsTime : 15
                                 })(
-                                    <div><InputNumber></InputNumber><span>Mins</span></div>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.upsTime} /> : null}
+                                <InputNumber disabled value={this.state.content.upsTime} /> : null}
+                                <span>分钟</span>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1046,13 +1063,21 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.upsRedundance ? this.state.content.upsRedundance : 'N+1'
                                 })(
-                                    <Select>
-                                        <Option key={1} value='N'>N</Option>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                       <Option key={1} value='N'>N</Option>
                                         <Option key={2} value='N+1'>N+1</Option>
                                         <Option key={3} value='N+2'>N+2</Option>
                                         <Option key={4} value='2N'>2N</Option>
                                         <Option key={5} value='2(N+1)'>2(N+1)</Option>
-                                    </Select>
+                                    </Select>                                   
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.upsRedundance} /> : null}
@@ -1074,13 +1099,21 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.generatorGroup ? this.state.content.generatorGroup :'N+1'
                                 })(
-                                    <Select>
-                                        <Option key={1} value='N'>N</Option>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                       <Option key={1} value='N'>N</Option>
                                         <Option key={2} value='N+1'>N+1</Option>
                                         <Option key={3} value='N+2'>N+2</Option>
                                         <Option key={4} value='2N'>2N</Option>
                                         <Option key={5} value='2(N+1)'>2(N+1)</Option>
-                                    </Select>
+                                    </Select>      
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.generatorGroup} /> : null}
@@ -1103,9 +1136,18 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.airconditioner ? this.state.content.airconditioner : "精密空调"
                                 })(
-                                    <Select>
-                                        <Option key={1} value='精密空调'>精密空调</Option>
-                                    </Select>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                      <Option key={1} value='精密空调'>精密空调</Option>
+                                        <Option key={2} value='精密空调'>精密空调+行间空调</Option>
+                                    </Select>      
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
                                 <Input disabled value={this.state.content.airconditioner} /> : null}
@@ -1241,28 +1283,6 @@ class ViewProjectAMDPhase5 extends React.Component {
                         </Form.Item>
                     </Col>
                 </Row>
-                {/* <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'20px', textAlign:'center'}}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{fontSize:'16px', textAlign:'center'}}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="下限">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('downLimitHumidity', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.downLimitHumidity ? this.state.content.downLimitHumidity : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ? 
-                                <Input disabled value={this.state.content.downLimitHumidity} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row> */}
                 <Row>
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{fontSize:'20px', textAlign:'center'}}></div>
@@ -1401,6 +1421,9 @@ class ViewProjectAMDPhase5 extends React.Component {
                                         }
                                     >
                                         <Option key={1} value='FM200'>FM200</Option>
+                                        <Option key={2} value='IG541'>IG541</Option>
+                                        <Option key={1} value='水喷淋'>水喷淋</Option>
+                                        <Option key={1} value='高压细水雾'>高压细水雾</Option>
                                     </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
@@ -1433,6 +1456,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                         }
                                     >
                                         <Option key={1} value='常规报警系统'>常规报警系统</Option>
+                                        <Option key={1} value='常规报警系统+VESDA'>常规报警系统+VESDA</Option>
                                     </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
@@ -1465,6 +1489,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                         }
                                     >
                                         <Option key={1} value='自动'>自动</Option>
+                                        <Option key={2} value='手动'>手动</Option>
                                     </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ? 
@@ -1488,13 +1513,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('notifyTime_Significant', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.notifyTime_Significant ? this.state.content.notifyTime_Significant : null
+                                    initialValue: this.state.content.notifyTime_Significant ? this.state.content.notifyTime_Significant : 5
                                 })(
-                                    <div>
-                                        <InputNumber></InputNumber>
-                                        <span>天</span>
-                                    </div>
+                                    <InputNumber></InputNumber>
                                 ) : null}
+                                <span>天</span>
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.notifyTime_Significant} /> : null}
                         </Form.Item>
@@ -1513,13 +1536,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('notifyTime_great', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.notifyTime_great ? this.state.content.notifyTime_great : null
+                                    initialValue: this.state.content.notifyTime_great ? this.state.content.notifyTime_great : 3
                                 })(
-                                    <div>
-                                        <InputNumber></InputNumber>
-                                        <span>天</span>
-                                    </div>
+                                    <InputNumber></InputNumber>
                                 ) : null}
+                                <span>天</span>
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.notifyTime_great} /> : null}
                         </Form.Item>
@@ -1538,13 +1559,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('notifyTime_normal', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.notifyTime_normal ? this.state.content.notifyTime_normal : null
+                                    initialValue: this.state.content.notifyTime_normal ? this.state.content.notifyTime_normal : 1
                                 })(
-                                    <div>
-                                        <InputNumber></InputNumber>
-                                        <span>天</span>
-                                    </div>
+                                    <InputNumber></InputNumber>
                                 ) : null}
+                                <span>天</span>
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.notifyTime_normal} /> : null}
                         </Form.Item>
@@ -1587,7 +1606,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.responseTime ? this.state.content.responseTime : null
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.responseTime} /> : null}
@@ -1610,13 +1629,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('responseTime2', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.responseTime2 ? this.state.content.responseTime2 : '15'
+                                    initialValue: this.state.content.responseTime2 ? this.state.content.responseTime2 : 15
                                 })(
-                                    <div>
-                                        <Input></Input>
-                                        <span>分钟</span>
-                                    </div>
+                                        <InputNumber></InputNumber>
                                 ) : null}
+                                <span>分钟</span>
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.responseTime2} /> : null}
                         </Form.Item>
@@ -1689,21 +1706,68 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
+                        <Form.Item label="提供时间">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('serviceReportSubmitAt', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.serviceReportSubmitAt ? this.state.content.serviceReportSubmitAt : null
+                                })(
+                                    <DatePicker></DatePicker>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <DatePicker disabled defaultValue={this.state.content.submitWay} /> : null}
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={16} style={rightFormItemStyle}>
                         <Form.Item label="提交方式">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('submitWay', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.submitWay ? this.state.content.submitWay : null
+                                    initialValue: this.state.content.submitWay ? this.state.content.submitWay : []
                                 })(
-                                    <Input ></Input>
+                                    <Checkbox.Group options={submitWayOptions} />
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.submitWay} /> : null}
+                                <Checkbox.Group disabled options={submitWayOptions} defaultValue={this.state.content.submitWay} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
                 {/* 服务报告 - 结束*/}
+
+                {/* 风险管理 - 开始*/}
+                <Row>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '20px', textAlign: 'center' }}>风险管理</div>
+                    </Col>
+                    <Col span={4} style={leftFormItemStyle}>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
+                    </Col>
+                    <Col span={16} style={rightFormItemStyle}>
+                        <Form.Item label="风险管理">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('riskManagement', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.riskManagement ? this.state.content.riskManagement : null
+                                })(
+                                    <Input ></Input>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.riskManagement} /> : null}
+                        </Form.Item>
+                    </Col>
+                </Row>
+                {/* 风险管理 - 结束*/}
 
                  {/* 资产管理 - 开始*/}
                 <Row>
@@ -1719,9 +1783,20 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('capitalManagement', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.capitalManagement ? this.state.content.capitalManagement : null
+                                    initialValue: this.state.content.capitalManagement ? this.state.content.capitalManagement : '无'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='有'>有</Option>
+                                        <Option key={2} value='无'>无</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.capitalManagement} /> : null}
@@ -1746,10 +1821,11 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.itInspect ? this.state.content.itInspect : null
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.itInspect} /> : null}
+                            <span>/小时一次</span>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1764,83 +1840,17 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '16px', textAlign: 'center' }}>标准服务</div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="设备开关机">
+                        <Form.Item label="" style={{marginLeft:'10px'}}>
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('deviceTurnOnOff', {
+                                getFieldDecorator('standardService', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.deviceTurnOnOff ? this.state.content.deviceTurnOnOff : null
+                                    initialValue: this.state.content.standardService ? this.state.content.standardService : ['设备开关机','设备重启','插拔线路','状态查看']
                                 })(
-                                    <Input ></Input>
+                                    <Checkbox.Group options={standardServiceOptions} />
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.deviceTurnOnOff} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="设备重启">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('deviceReboot', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.deviceReboot ? this.state.content.deviceReboot : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.deviceReboot} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="插拔线路">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('plugLine', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.plugLine ? this.state.content.plugLine : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.plugLine} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="状态查看">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('statusCheck', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.statusCheck ? this.state.content.statusCheck : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.statusCheck} /> : null}
+                                <Checkbox.Group disabled options={standardServiceOptions} defaultValue={this.state.content.standardService} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -1852,149 +1862,17 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '16px', textAlign: 'center' }}>定制服务</div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="厂商现场陪同">
+                        <Form.Item label="" style={{marginLeft:'10px'}}>
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('vendorOnSite', {
+                                getFieldDecorator('customService', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.vendorOnSite ? this.state.content.vendorOnSite : null
+                                    initialValue: this.state.content.customService ? this.state.content.customService : ['厂商现场陪同','上下架','综合布线','介质磁带','备件存放','代收代发','更换配件']
                                 })(
-                                    <Input ></Input>
+                                    <Checkbox.Group options={customServiceOptions} />
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.vendorOnSite} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="上下架">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('onOffShelf', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.onOffShelf ? this.state.content.onOffShelf : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.onOffShelf} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="综合布线">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('comprehensiveLineDistribution', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.comprehensiveLineDistribution ? this.state.content.comprehensiveLineDistribution : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.comprehensiveLineDistribution} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="介质磁带">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('materialTape', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.materialTape ? this.state.content.materialTape : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.materialTape} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="备件存放">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('backupStorage', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.backupStorage ? this.state.content.backupStorage : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.backupStorage} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="代收代发">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('onbehalfDelivery', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.onbehalfDelivery ? this.state.content.onbehalfDelivery : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.onbehalfDelivery} /> : null}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
-                    </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="更换配件">
-                            {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('changeParts', {
-                                    rules: [
-                                    ],
-                                    initialValue: this.state.content.changeParts ? this.state.content.changeParts : null
-                                })(
-                                    <Input ></Input>
-                                ) : null}
-                            {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.changeParts} /> : null}
+                                <Checkbox.Group disabled options={customServiceOptions} defaultValue={this.state.content.customService} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2006,20 +1884,20 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '20px', textAlign: 'center' }}>门禁/机柜锁管理</div>
                     </Col>
                     <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}>专属区域</div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="专属区域">
+                        <Form.Item label="" style={{marginLeft:'10px'}}>
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('exclusiveZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.exclusiveZone ? this.state.content.exclusiveZone : null
+                                    initialValue: this.state.content.exclusiveZone ? this.state.content.exclusiveZone : ['门禁卡','钥匙','指纹','密码']
                                 })(
-                                    <Input ></Input>
+                                    <Checkbox.Group options={exclusiveZoneOptions} />
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.exclusiveZone} /> : null}
+                                <Checkbox.Group disabled options={exclusiveZoneOptions} defaultValue={this.state.content.exclusiveZone} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2031,17 +1909,25 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
                     <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="专属区域">
+                        <Form.Item label="非专属区域">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('nonExclusiveZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.nonExclusiveZone ? this.state.content.nonExclusiveZone : null
+                                    initialValue: this.state.content.nonExclusiveZone ? this.state.content.nonExclusiveZone : 1
                                 })(
-                                    <Input ></Input>
+                                    <Radio.Group>
+                                        <Radio value={1}>钥匙</Radio>
+                                        <Radio value={2}>电控锁</Radio>
+                                        <Radio value={3}>密码锁</Radio>
+                                    </Radio.Group>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.nonExclusiveZone} /> : null}
+                                <Radio.Group disabled defaultValue={this.state.content.nonExclusiveZone ? this.state.content.nonExclusiveZone : 1}>
+                                        <Radio value={1}>钥匙</Radio>
+                                        <Radio value={2}>电控锁</Radio>
+                                        <Radio value={3}>密码锁</Radio>
+                                    </Radio.Group> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2058,9 +1944,12 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('authorizedZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.authorizedZone ? this.state.content.authorizedZone : null
+                                    initialValue: this.state.content.authorizedZone ? this.state.content.authorizedZone : 'GDS公共区域权限'
                                 })(
-                                    <Input ></Input>
+                                    <Select>
+                                        <Option key={1} value='GDS公共区域权限'>GDS公共区域权限</Option>
+                                        <Option key={2} value='客户所属区域权限'>客户所属区域权限</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.authorizedZone} /> : null}
@@ -2083,12 +1972,13 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('publicZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.publicZone ? this.state.content.publicZone : null
+                                    initialValue: this.state.content.publicZone ? this.state.content.publicZone : 30
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.publicZone} /> : null}
+                                <span>天</span>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2105,12 +1995,13 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('machineZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.machineZone ? this.state.content.machineZone : null
+                                    initialValue: this.state.content.machineZone ? this.state.content.machineZone : 90
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.machineZone} /> : null}
+                                <span>天</span>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2127,12 +2018,13 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('cctvExclusiveZone', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.cctvExclusiveZone ? this.state.content.cctvExclusiveZone : null
+                                    initialValue: this.state.content.cctvExclusiveZone ? this.state.content.cctvExclusiveZone : 90
                                 })(
-                                    <Input ></Input>
+                                    <InputNumber ></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.cctvExclusiveZone} /> : null}
+                                <span>天</span>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2149,9 +2041,22 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('cctvExclusiveZoneStorage', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.cctvExclusiveZoneStorage ? this.state.content.cctvExclusiveZoneStorage : null
+                                    initialValue: this.state.content.cctvExclusiveZoneStorage ? this.state.content.cctvExclusiveZoneStorage : 'RAID0'
                                 })(
-                                    <Input ></Input>
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder="选择或填写"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                    >
+                                        <Option key={1} value='RAID0'>RAID0</Option>
+                                        <Option key={2} value='RAID1'>RAID1</Option>
+                                        <Option key={3} value='RAID5'>RAID5</Option>
+                                        <Option key={4} value='普通硬盘'>普通硬盘</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.cctvExclusiveZoneStorage} /> : null}
@@ -2201,9 +2106,14 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('machineShelf', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.machineShelf ? this.state.content.machineShelf : null
+                                    initialValue: this.state.content.machineShelf ? this.state.content.machineShelf : '客户所有，客户管理'
                                 })(
-                                    <Input ></Input>
+                                    <Select style={{ width: 200 }}>
+                                        <Option key={1} value='客户所有，客户管理'>客户所有，客户管理</Option>
+                                        <Option key={2} value='GDS所有，客户管理'>GDS所有，客户管理</Option>
+                                        <Option key={3} value='GDS所有，GDS管理'>GDS所有，GDS管理</Option>
+                                        <Option key={4} value='客户所有，GDS管理'>客户所有，GDS管理</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.machineShelf} /> : null}
@@ -2223,9 +2133,14 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('pdu', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.pdu ? this.state.content.pdu : null
+                                    initialValue: this.state.content.pdu ? this.state.content.pdu : '客户所有，客户管理'
                                 })(
-                                    <Input ></Input>
+                                    <Select style={{ width: 200 }}>
+                                        <Option key={1} value='客户所有，客户管理'>客户所有，客户管理</Option>
+                                        <Option key={2} value='GDS所有，客户管理'>GDS所有，客户管理</Option>
+                                        <Option key={3} value='GDS所有，GDS管理'>GDS所有，GDS管理</Option>
+                                        <Option key={4} value='客户所有，GDS管理'>客户所有，GDS管理</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.pdu} /> : null}
@@ -2245,9 +2160,14 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('doorGuard', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.doorGuard ? this.state.content.doorGuard : null
+                                    initialValue: this.state.content.doorGuard ? this.state.content.doorGuard : '客户所有，客户管理'
                                 })(
-                                    <Input ></Input>
+                                    <Select style={{ width: 200 }}>
+                                        <Option key={1} value='客户所有，客户管理'>客户所有，客户管理</Option>
+                                        <Option key={2} value='GDS所有，客户管理'>GDS所有，客户管理</Option>
+                                        <Option key={3} value='GDS所有，GDS管理'>GDS所有，GDS管理</Option>
+                                        <Option key={4} value='客户所有，GDS管理'>客户所有，GDS管理</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.doorGuard} /> : null}
@@ -2267,9 +2187,14 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 getFieldDecorator('cctv', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.cctv ? this.state.content.cctv : null
+                                    initialValue: this.state.content.cctv ? this.state.content.cctv : '客户所有，客户管理'
                                 })(
-                                    <Input ></Input>
+                                    <Select style={{ width: 200 }}>
+                                        <Option key={1} value='客户所有，客户管理'>客户所有，客户管理</Option>
+                                        <Option key={2} value='GDS所有，客户管理'>GDS所有，客户管理</Option>
+                                        <Option key={3} value='GDS所有，GDS管理'>GDS所有，GDS管理</Option>
+                                        <Option key={4} value='客户所有，GDS管理'>客户所有，GDS管理</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.cctv} /> : null}
@@ -2281,20 +2206,56 @@ class ViewProjectAMDPhase5 extends React.Component {
                         <div style={{ fontSize: '20px', textAlign: 'center' }}></div>
                     </Col>
                     <Col span={4} style={leftFormItemStyle}>
-                        <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
+                        <div style={{ fontSize: '16px', textAlign: 'center' }}>IT设备</div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="IT设备">
+                    <Col span={4} style={rightFormItemStyle}>
+                        <Form.Item colon={false} label=" ">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('itDevice', {
                                     rules: [
                                     ],
                                     initialValue: this.state.content.itDevice ? this.state.content.itDevice : null
                                 })(
-                                    <Input ></Input>
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='GDS购买，客户租用'>GDS购买，客户租用</Option>
+                                        <Option key={2} value='GDS租赁，客户租用'>GDS租赁，客户租用</Option>
+                                        <Option key={3} value='客户自有'>客户自有</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.itDevice} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={4} style={rightFormItemStyle}>
+                        <Form.Item colon={false} label=" ">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('itDeviceBelong', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.itDeviceBelong ? this.state.content.itDeviceBelong : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='到期后归客户'>到期后归客户</Option>
+                                        <Option key={2} value='到期后不归客户'>到期后不归客户</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.itDeviceBelong} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="到期时间">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('itDeviceDueDate', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.itDeviceDueDate ? this.state.content.itDeviceDueDate : null
+                                })(
+                                    <DatePicker>
+                                    </DatePicker>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <DatePicker disabled value={this.state.content.itDeviceDueDate} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2309,18 +2270,35 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="合约罚款">
+                    <Col span={8} style={leftFormItemStyle}>
+                        <Form.Item label="合约罚则">
                             {this.props.data[FieldStatus] === 1 ?
-                                getFieldDecorator('contactPenalty', {
+                                getFieldDecorator('contractHasPenalty', {
                                     rules: [
                                     ],
-                                    initialValue: this.state.content.contactPenalty ? this.state.content.contactPenalty : null
+                                    initialValue: this.state.content.contractHasPenalty ? this.state.content.contractHasPenalty : null
                                 })(
-                                    <InputNumber ></InputNumber>
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='适用'>适用</Option>
+                                        <Option key={2} value='不适用'>不适用</Option>
+                                    </Select>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <InputNumber disabled value={this.state.content.contactPenalty} /> : null}
+                                <Input disabled value={this.state.content.contractHasPenalty} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item colon={false} label=" ">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('contractPenalty', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.contractPenalty ? this.state.content.contractPenalty : null
+                                })(
+                                    <Input style={{ width: 120 }}></Input>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.contractPenalty} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2331,7 +2309,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
                         <Form.Item label="总包电量">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('totalFreePower', {
@@ -2343,6 +2321,26 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <InputNumber disabled value={this.state.content.totalFreePower} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="总包电量单位">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('totalFreePowerUnit', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.totalFreePowerUnit ? this.state.content.totalFreePowerUnit : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='A'>A</Option>
+                                        <Option key={2} value='KW'>KW</Option>
+                                        <Option key={3} value='KVA'>KVA</Option>
+                                        <Option key={4} value='KWH'>KWH</Option>
+                                        <Option key={5} value='MW'>MW</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.totalFreePowerUnit} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2397,7 +2395,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
                         <Form.Item label="GDS承诺供电">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('gdsPromisedElectricity', {
@@ -2411,6 +2409,26 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 <InputNumber disabled value={this.state.content.gdsPromisedElectricity} /> : null}
                         </Form.Item>
                     </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="GDS承诺供电单位">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('gdsPromisedElectricityUnit', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.gdsPromisedElectricityUnit ? this.state.content.gdsPromisedElectricityUnit : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='A'>A</Option>
+                                        <Option key={2} value='KW'>KW</Option>
+                                        <Option key={3} value='KVA'>KVA</Option>
+                                        <Option key={4} value='KWH'>KWH</Option>
+                                        <Option key={5} value='MW'>MW</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.gdsPromisedElectricityUnit} /> : null}
+                        </Form.Item>
+                    </Col>
                 </Row>
                 <Row>
                     <Col span={4} style={leftFormItemStyle}>
@@ -2419,7 +2437,24 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
+                        <Form.Item label="合约PUE">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('contractHasPUE', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.contractHasPUE ? this.state.content.contractHasPUE : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='适用'>适用</Option>
+                                        <Option key={2} value='不适用'>不适用</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <InputNumber disabled value={this.state.content.contractHasPUE} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
                         <Form.Item label="合约PUE">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('contractPUE', {
@@ -2427,7 +2462,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.contractPUE ? this.state.content.contractPUE : null
                                 })(
-                                    <InputNumber ></InputNumber>
+                                    <InputNumber></InputNumber>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <InputNumber disabled value={this.state.content.contractPUE} /> : null}
@@ -2441,7 +2476,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
                         <Form.Item label="超电单价">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('overchargeUnitPrice', {
@@ -2455,6 +2490,26 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 <InputNumber disabled value={this.state.content.overchargeUnitPrice} /> : null}
                         </Form.Item>
                     </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="超电单价单位">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('overchargeUnitPriceUnit', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.overchargeUnitPriceUnit ? this.state.content.overchargeUnitPriceUnit : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='A'>A</Option>
+                                        <Option key={2} value='KW'>KW</Option>
+                                        <Option key={3} value='KVA'>KVA</Option>
+                                        <Option key={4} value='KWH'>KWH</Option>
+                                        <Option key={5} value='MW'>MW</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.overchargeUnitPriceUnit} /> : null}
+                        </Form.Item>
+                    </Col>
                 </Row>
                 <Row>
                     <Col span={4} style={leftFormItemStyle}>
@@ -2463,7 +2518,7 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
+                    <Col span={8} style={leftFormItemStyle}>
                         <Form.Item label="空置单价">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('emptyUnitPrice', {
@@ -2475,6 +2530,24 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <InputNumber disabled value={this.state.content.emptyUnitPrice} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="空置单价币种">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('emptyUnitPriceCurrency', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.emptyUnitPriceCurrency ? this.state.content.emptyUnitPriceCurrency : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='人民币'>人民币</Option>
+                                        <Option key={2} value='美元'>美元</Option>
+                                        <Option key={3} value='港币'>港币</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <InputNumber disabled value={this.state.content.emptyUnitPriceCurrency} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2493,10 +2566,10 @@ class ViewProjectAMDPhase5 extends React.Component {
                                     ],
                                     initialValue: this.state.content.guaranteedTime ? this.state.content.guaranteedTime : null
                                 })(
-                                    <Input ></Input>
+                                    <DatePicker ></DatePicker>
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
-                                <Input disabled value={this.state.content.guaranteedTime} /> : null}
+                                <DatePicker disabled value={this.state.content.guaranteedTime} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2507,8 +2580,8 @@ class ViewProjectAMDPhase5 extends React.Component {
                     <Col span={4} style={leftFormItemStyle}>
                         <div style={{ fontSize: '16px', textAlign: 'center' }}></div>
                     </Col>
-                    <Col span={16} style={rightFormItemStyle}>
-                        <Form.Item label="GDS供电上线">
+                    <Col span={8} style={leftFormItemStyle}>
+                        <Form.Item label="GDS供电上限">
                             {this.props.data[FieldStatus] === 1 ?
                                 getFieldDecorator('gdsPowerSupplyTopLimit', {
                                     rules: [
@@ -2519,6 +2592,26 @@ class ViewProjectAMDPhase5 extends React.Component {
                                 ) : null}
                             {this.props.data[FieldStatus] === 2 ?
                                 <Input disabled value={this.state.content.gdsPowerSupplyTopLimit} /> : null}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={rightFormItemStyle}>
+                        <Form.Item label="GDS供电上限单位">
+                            {this.props.data[FieldStatus] === 1 ?
+                                getFieldDecorator('gdsPowerSupplyTopLimitUnit', {
+                                    rules: [
+                                    ],
+                                    initialValue: this.state.content.gdsPowerSupplyTopLimitUnit ? this.state.content.gdsPowerSupplyTopLimitUnit : null
+                                })(
+                                    <Select style={{ width: 120 }}>
+                                        <Option key={1} value='A'>A</Option>
+                                        <Option key={2} value='KW'>KW</Option>
+                                        <Option key={3} value='KVA'>KVA</Option>
+                                        <Option key={4} value='KWH'>KWH</Option>
+                                        <Option key={5} value='MW'>MW</Option>
+                                    </Select>
+                                ) : null}
+                            {this.props.data[FieldStatus] === 2 ?
+                                <Input disabled value={this.state.content.gdsPowerSupplyTopLimitUnit} /> : null}
                         </Form.Item>
                     </Col>
                 </Row>
@@ -2627,6 +2720,39 @@ const rightFormItemStyle = {
     borderColor: 'grey',
     borderWidth: '1px'
 }
+
+const standardServiceOptions = [
+    { label: '设备开关机', value: '设备开关机' },
+    { label: '设备重启', value: '设备重启' },
+    { label: '插拔线路', value: '插拔线路' },
+    { label: '状态查看', value: '状态查看' },
+  ];
+
+  const customServiceOptions = [
+    { label: '厂商现场陪同', value: '厂商现场陪同' },
+    { label: '上下架', value: '上下架' },
+    { label: '综合布线', value: '综合布线' },
+    { label: '介质磁带', value: '介质磁带' },
+    { label: '备件存放', value: '备件存放' },
+    { label: '代收代发', value: '代收代发' },
+    { label: '更换配件', value: '更换配件' },
+  ];
+
+  //门禁卡、钥匙、指纹、密码
+  const exclusiveZoneOptions = [
+    { label: '门禁卡', value: '门禁卡' },
+    { label: '钥匙', value: '钥匙' },
+    { label: '指纹', value: '指纹' },
+    { label: '密码', value: '密码' },
+  ]
+
+  
+  const submitWayOptions = [
+    { label: '电子邮件', value: '电子邮件' },
+    { label: '服务平台', value: '服务平台' },
+    { label: '当面提供纸质文件', value: '当面提供纸质文件' },
+  ];
+
 
 const EditableContext = React.createContext();
 
@@ -2739,7 +2865,7 @@ class EditableTable extends React.Component {
             dataIndex: 'cabinetType',
             editable: false,
             render: (value, record) => (
-                <Radio.Group defaultValue={1} onChange={(e) => this.handleCabinetTypeChange(e, value, record)}>
+                <Radio.Group defaultValue={record.cabinetType? record.cabinetType : 1} onChange={(e) => this.handleCabinetTypeChange(e, value, record)}>
                     <Radio value={1}>整包</Radio>
                     <Radio value={2}>隔笼</Radio>
                     <Radio value={3}>隔笼散柜</Radio>
@@ -2767,7 +2893,46 @@ class EditableTable extends React.Component {
     }
   
     componentWillReceiveProps(nextProps) {
-      if (nextProps["data-__field"] && nextProps["data-__field"].value && Array.isArray(nextProps["data-__field"].value)) {
+        debugger
+        // if (nextProps.value) {
+        //     let datasource = [];
+        //     nextProps["data-__field"].value.forEach((item, index) => {
+        //       datasource.push({
+        //         key: item.key,
+        //         machineRoom: item.machineRoom,
+        //         cabinet: item.cabinet,          
+        //         cabinetNo: item.cabinetNo,
+        //         cabinetType: item.cabinetType
+        //       })
+        //     });
+      
+        //     this.setState({
+        //       dataSource: datasource,
+        //     })
+        //   }
+    if(!this.state.count && nextProps["data"] && Array.isArray(nextProps["data"])) //由PhaseItem组件传入
+        {
+            let datasource = [];
+            nextProps["data"].forEach((item) => {
+            datasource.push({
+                key: item.key,
+                machineRoom: item.machineRoom,
+                cabinet: item.cabinet,          
+                cabinetNo: item.cabinetNo,
+                cabinetType: item.cabinetType
+            })
+            });
+    
+            //这里要HandleChange一下，通知Form保存记录
+            this.setState({
+            dataSource: datasource,
+            count: datasource.length
+            }, () => {
+                this.handleChange()
+              })
+        }
+        //由Antd的Form自动传入
+    else  if (nextProps["data-__field"] && nextProps["data-__field"].value && Array.isArray(nextProps["data-__field"].value)) {
         let datasource = [];
         nextProps["data-__field"].value.forEach((item, index) => {
           datasource.push({
@@ -2813,6 +2978,7 @@ class EditableTable extends React.Component {
     };
   
     handleAdd = () => {
+        debugger
       const { count, dataSource } = this.state;
       const newData = {
         // key: count,
