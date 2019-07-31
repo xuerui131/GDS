@@ -83,6 +83,11 @@ class Step1Form extends React.Component {
                 projectId: this.props.data.id
             })
         }
+
+        if(this.props.data.dept)
+        {
+            this.setTemplateList(this.props.data.dept);
+        }
     }
 
     getTemplateList = () => {
@@ -130,7 +135,7 @@ class Step1Form extends React.Component {
                         createdBy: ''
                     });
                 })
-
+                
                 this.setState({
                     allProjectTemplates
                 });
@@ -248,6 +253,11 @@ class Step1Form extends React.Component {
     }
 
     onDeptChange = (e) => {
+        this.setTemplateList(e);
+    }
+
+    setTemplateList(deptId)
+    {
         let projectTemplates =  [];
                 
         //加入固定模板
@@ -260,7 +270,7 @@ class Step1Form extends React.Component {
             createdBy: ''
         });
 
-        let temp = this.state.allProjectTemplates.filter(pt => pt.deptId === e);
+        let temp = this.state.allProjectTemplates.filter(pt => pt.deptId === deptId);
 
         if(temp)
         {
@@ -279,7 +289,6 @@ class Step1Form extends React.Component {
         this.setState({
             projectTemplates
         })
-
     }
 
     getProjectPhases()

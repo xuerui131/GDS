@@ -193,9 +193,10 @@ class CreateProjectStep2 extends React.Component {
         })
             .then(res => {
                 console.log("save project result=>", res);
-
+                
                 let projectId = res.data.Data;
 
+                debugger
                 this.savePhases(projectId);
 
                 //this.setState({ current });

@@ -308,7 +308,7 @@ namespace GDS.WebApi.Controllers
                 entity.UpdateTime = DateTime.Now;
                 var result = new ProjectBLL().UpdateProject(entity);
                
-                response = new ResponseEntity<int>(result.Success, result.Message, result.Data);
+                response = new ResponseEntity<int>(result.Success, result.Message, entity.Id);
 
                 new LogBLL().LogEvent(CurrenUserInfo.LoginName, GDS.Entity.Constant.ConstantDefine.ModuleProject,
                          GDS.Entity.Constant.ConstantDefine.TypeUpdate, GDS.Entity.Constant.ConstantDefine.ActionUpdateProject, $"{entity.Id}");
